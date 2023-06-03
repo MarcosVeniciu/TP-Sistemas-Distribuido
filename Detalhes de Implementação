@@ -1,0 +1,37 @@
+- colocar uma resposta padrão para o caso de buscar por algo que não existe.
+
+- O RF1 será removido ou feito se sobrar tempo, pois os usuarios ja deverão estar cadastrados no banco de dados
+  
+- O RF2: para logar o usuario devera usar um nome qualquer ao inves de um e-mail
+	- o nome e a senha não podera ter espaço
+
+- para exibir o perfil do proprio usuario sera usada a requisição buscar_perfil_amigo para receber o nome, adescriçaõ e a lista de receitas do usuario.
+
+
+- Codigo para requisiçao de login: 0 
+	padrão: codigo nome senha 
+		exemplo: 0 marcos 26
+
+- codigo para requisição de envio de receita: 1
+	padrão: codigo nome receita
+		exemplo: 1 marcos [nome_receita] [lista ingredientes] [modo preparo]
+
+- codigo para requisição de adicionar amigo: 2
+	padrão: codigo usuario nome_amigo
+		exemplo 2 marcos B
+
+- codigo para requisição de perfil amigo: 3	
+	padrão: 3 usuario_requisitor usuario_requerido
+		exemplo: 3 marcos A (marcos esta requerindo o perfil de A)
+
+- codigo para requisição de perfil amigo: 4	
+	padrão: 4 usuario_requisitor
+		exemplo: 4 marcos (marcos esta requerindo o proprio perfil)
+		
+- codigo para requisição de receita: 5	
+	padrão: 5 usuario_requisitor usuario_dono nome_receita
+		exemplo: marcos A receita de bacalhau
+	
+- codigo para requisição de avaliar rceita: 6	
+	padrão: 6 usuario avaliado nome_receita
+		exemplo: marcos A receita de bacalhau

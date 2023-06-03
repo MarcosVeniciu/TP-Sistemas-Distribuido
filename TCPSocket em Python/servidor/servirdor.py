@@ -2,7 +2,7 @@ import socket
 import pickle
 
 def server(host = 'localhost', port=8082):
-    dict = {'A': 1, 'B': 2, 'C': 3}
+    dict = {'A': 1, 'B': 2, 'C': 3, 'marcos veniciu': 26}
     print(dict)
     print()
     print()
