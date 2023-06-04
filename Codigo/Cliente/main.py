@@ -128,7 +128,7 @@ class perfil_usuario(tk.Frame):
 
 
 		# Botão da lista de receita do usuario
-		button1 = ttk.Button(self, text =" 		 Minhas Receitas 	       		     ", command = lambda : controller.show_frame(Perfil_amigo))
+		button1 = ttk.Button(self, text ="Minhas Receitas", width=50, command = lambda : controller.show_frame(Perfil_amigo))
 		button1.place(x = 10,y = 150)
   
 		# lista de Amigos
@@ -136,7 +136,7 @@ class perfil_usuario(tk.Frame):
 		num_receitas = 1
   
 		for i in range(num_amigos): # tem de a largura dos botoes
-			button1 = ttk.Button(self, text ="A                                                                                             " + str(num_receitas + i), 
+			button1 = ttk.Button(self, text ="A						" + str(num_receitas + i+10), 
 								 width=50,
                         		 command = lambda : controller.show_frame(Perfil_amigo))
 			button1.place(x = 10,y = 200 + (28*i))
@@ -176,10 +176,10 @@ class Perfil_amigo(tk.Frame):
 		# lista de Amigos
 		num_amigos = 16
 		num_receitas = 1
-		palavra = "Receita de Bacalhau "
+		palavra = "Receita de Bacalhau				"
   
 		for i in range(num_amigos): # tem de a largura dos botoes
-			button1 = ttk.Button(self, text = palavra + str(num_receitas + i), 
+			button1 = ttk.Button(self, text = palavra + str(num_receitas + i+10), 
 								 width=50,
 								 command = lambda : controller.show_frame(mostrar_receita))
 			button1.place(x = 10,y = 150 + (28*i))
@@ -202,6 +202,9 @@ class mostrar_receita(tk.Frame):
 		label = ttk.Label(self, text ="Receita de Bacalhau", font = MIDFONT)
 		label.place(x = 10,y = 10)
   
+		# Botão avaliar receita
+		button_voltar = ttk.Button(self, text ="Garfadas 15", command = lambda : controller.show_frame(mostrar_receita))
+		button_voltar.place(x = 160,y = 610)
   
 		# Ingredientes
 		label_ingredientes = ttk.Label(self, text ="Ingredientes:", font = MIDFONT)
