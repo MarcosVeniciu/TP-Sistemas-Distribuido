@@ -13,6 +13,6 @@ def requisitar_perfil_proprio(usuario):
 
 
 # Teste
-nome = input("Nome: ")
-sesult = requisitar_perfil_proprio(nome)
-print(sesult)
+#nome = input("Nome: ")
+#sesult = requisitar_perfil_proprio(nome)
+#print(sesult)
