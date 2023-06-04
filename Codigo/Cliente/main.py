@@ -4,7 +4,8 @@ from tkinter import *
 
 
 LARGEFONT =("Verdana", 35)
-
+MIDFONT =("Verdana", 15)
+MINFONT =("Verdana", 9)
 class tkinterApp(tk.Tk):
 	
 	# __init__ function for class tkinterApp
@@ -25,7 +26,7 @@ class tkinterApp(tk.Tk):
 
 		# iterating through a tuple consisting
 		# of the different page layouts
-		for F in (StartPage, Page1, Page2):
+		for F in (Login, Page1, Page2):
 
 			frame = F(container, self)
 
@@ -36,7 +37,7 @@ class tkinterApp(tk.Tk):
 
 			frame.grid(row = 0, column = 0, sticky ="nsew")
 
-		self.show_frame(StartPage)
+		self.show_frame(Login)
 
 	# to display the current frame passed as
 	# parameter
@@ -45,7 +46,7 @@ class tkinterApp(tk.Tk):
 		frame.tkraise()
 
 # Tela de Login
-class StartPage(tk.Frame):
+class Login(tk.Frame):
 	
 
 	def __init__(self, parent, controller):
@@ -101,38 +102,44 @@ class StartPage(tk.Frame):
 		autenticar["command"] = lambda : controller.show_frame(Page1) if verificaSenha() == True  else print("Login invalido")
 		autenticar.pack()
 		
-	
-		
 
-
-# second window frame page1
+# Tela perfil usuario
 class Page1(tk.Frame):
 	
 	def __init__(self, parent, controller):
 		
 		tk.Frame.__init__(self, parent)
-		label = ttk.Label(self, text ="Page 1", font = LARGEFONT)
-		label.grid(row = 0, column = 4, padx = 10, pady = 10)
 
-		# button to show frame 2 with text
-		# layout2
-		button1 = ttk.Button(self, text ="StartPage",
-							command = lambda : controller.show_frame(StartPage))
-	
-		# putting the button in its place
-		# by using grid
-		button1.grid(row = 1, column = 1, padx = 10, pady = 10)
-
-		# button to show frame 2 with text
-		# layout2
-		button2 = ttk.Button(self, text ="Page 2",
-							command = lambda : controller.show_frame(Page2))
-	
-		# putting the button in its place by
-		# using grid
-		button2.grid(row = 2, column = 1, padx = 10, pady = 10)
+		# Nome do usuario
+		label = ttk.Label(self, text ="Nome Usuario", font = MIDFONT)
+		label.place(x = 10,y = 10)
+  
+		# Descrição do perfil Cada linha tem no maximo 66 caracteres
+		# posso fazer um loop como nos botoes e divir a string nesse valor
+		label = ttk.Label(self, text ="Tenho 126 anos, e a 97 estou na universidade universidade universi", font = MINFONT)
+		label.place(x = 10,y = 60)
+		label = ttk.Label(self, text ="Tenho 126 anos, e a 97 estou na universidade universidade universi", font = MINFONT)
+		label.place(x = 10,y = 75)
+		label = ttk.Label(self, text ="Tenho 126 anos, e a 97 estou na universidade universidade universi", font = MINFONT)
+		label.place(x = 10,y = 90)
 
 
+		# Botão da lista de receita do usuario
+		button1 = ttk.Button(self, text =" 		 Minhas Receitas 	       		     ", command = lambda : controller.show_frame(Login))
+		button1.place(x = 10,y = 150)
+  
+		# lista de Amigos
+		num_amigos = 14
+		num_receitas = 1
+  
+		for i in range(num_amigos): # tem de a largura dos botoes
+			button1 = ttk.Button(self, text ="A	   		 			 " + str(num_receitas + i), 
+                        		 command = lambda : controller.show_frame(Page2))
+			button1.place(x = 10,y = 200 + (28*i))
+		
+		# botão para adicionar amigo
+		button2 = ttk.Button(self, text ="Adicionar Amigo", command = lambda : controller.show_frame(Login))
+		button2.place(x = 160,y = 610)
 
 
 # third window frame page2
@@ -153,8 +160,8 @@ class Page2(tk.Frame):
 
 		# button to show frame 3 with text
 		# layout3
-		button2 = ttk.Button(self, text ="Startpage",
-							command = lambda : controller.show_frame(StartPage))
+		button2 = ttk.Button(self, text ="Login",
+							command = lambda : controller.show_frame(Login))
 	
 		# putting the button in its place by
 		# using grid
