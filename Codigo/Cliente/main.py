@@ -3,9 +3,19 @@ from tkinter import ttk
 from tkinter import *
 
 
+import os
+os.system('clear') or None
+
+# Fontes
 LARGEFONT =("Verdana", 35)
 MIDFONT =("Verdana", 15)
 MINFONT =("Verdana", 9)
+
+# Variaveis Globais
+lista_ingredientes = [] # adicionar_receita
+
+
+
 class tkinterApp(tk.Tk):
 	
 	# __init__ function for class tkinterApp
@@ -105,9 +115,11 @@ class Login(tk.Frame):
 
 # Tela perfil usuario
 class perfil_usuario(tk.Frame):
-	
+  
 	def __init__(self, parent, controller):
-		
+		def commando(event):
+			controller.show_frame(Perfil_amigo)
+   
 		tk.Frame.__init__(self, parent)
 
 		# Nome do usuario
@@ -132,14 +144,16 @@ class perfil_usuario(tk.Frame):
 		button1.place(x = 10,y = 150)
   
 		# lista de Amigos
-		num_amigos = 14
+		num_amigos = 10
 		num_receitas = 1
   
+		
 		for i in range(num_amigos): # tem de a largura dos botoes
-			button1 = ttk.Button(self, text ="A						" + str(num_receitas + i+10), 
-								 width=50,
-                        		 command = lambda : controller.show_frame(Perfil_amigo))
-			button1.place(x = 10,y = 200 + (28*i))
+			button_list = tk.Label(text="Ainda não consigo colocar no canto", justify=LEFT, width=51, height=2, master=self, borderwidth=1, relief="groove")
+			button_list.place(x = 10,y = 200 + (i*40))
+			button_list.config(bg= "#e0e1e0")
+			button_list.bind("<Button-1>", commando)
+
 		
 		# botão para adicionar amigo
 		button2 = ttk.Button(self, text ="Adicionar Amigo", command = lambda : controller.show_frame(adicionar_amigo))
@@ -152,12 +166,13 @@ class Perfil_amigo(tk.Frame):
 		
 		tk.Frame.__init__(self, parent)
 
+		nome = "Nome Usuario"
 		# botão para voltar a tela anterior
 		button_voltar = ttk.Button(self, text ="Voltar", command = lambda : controller.show_frame(perfil_usuario))
 		button_voltar.place(x = 340,y = 10)
 		
 		# Nome do usuario
-		label = ttk.Label(self, text ="Nome Usuario", font = MIDFONT)
+		label = ttk.Label(self, text =nome, font = MIDFONT)
 		label.place(x = 10,y = 10)
   
 		# Descrição do perfil Cada linha tem no maximo 65 caracteres. Total de 260 caracteres para a descrição
@@ -183,11 +198,11 @@ class Perfil_amigo(tk.Frame):
 								 width=50,
 								 command = lambda : controller.show_frame(mostrar_receita))
 			button1.place(x = 10,y = 150 + (28*i))
-			#button1	
 		
-		# botão para adicionar amigo
-		button2 = ttk.Button(self, text ="Adicionar Receita", command = lambda : controller.show_frame(adicionar_receita))
-		button2.place(x = 160,y = 610)
+		# botão para adicionar receitas
+		if nome != "Usuario logado":
+			button2 = ttk.Button(self, text ="Adicionar Receita", command = lambda : controller.show_frame(adicionar_receita))
+			button2.place(x = 160,y = 610)
 
 # Tela em que mostra a receita escolhida
 class mostrar_receita(tk.Frame):
@@ -230,12 +245,31 @@ class mostrar_receita(tk.Frame):
 			label = ttk.Label(self, text =lista_preparo[i], font = MINFONT)
 			label.place(x = 10,y = linha_inicio + 30 + (i*20))
   
-  
+
 class adicionar_receita(tk.Frame):
+	
+
 	def __init__(self, parent, controller):
+		def salvar_receita():
+			preparo = modo_preparo.get(1.0,END)
+			controller.show_frame(perfil_usuario)
+
+		def listar_ingredientes():
+			texto = ""
+			ingrediente = ingredientes.get()
+			ingredientes.delete(0, tk.END)
+			if ingrediente != "":
+				lista_ingredientes.append(ingrediente) 
+				inicio = len(lista_ingredientes)-13 if len(lista_ingredientes) >= 13 else 0 # exibi apenas os ultimos 15 ingredientes	
+
+				for i in range(inicio, len(lista_ingredientes)):
+					texto += lista_ingredientes[i] + "\n"
+				listar_ingredienetesLabel["text"] = texto
+   
 		tk.Frame.__init__(self, parent)
 		fontePadrao = ("Arial", "11")
   
+		
 		# botão para voltar a tela anterior
 		button_voltar = ttk.Button(self, text ="Voltar", command = lambda : controller.show_frame(perfil_usuario))
 		button_voltar.place(x = 340,y = 10)
@@ -269,25 +303,22 @@ class adicionar_receita(tk.Frame):
 		ingredientes["width"] = 40 # largura da caixa de texto
 		ingredientes["font"] = fontePadrao
 		ingredientes.pack(side=LEFT)
+		
 
-		#button_voltar = ttk.Button(conteiner_ingredientes, text ="Add", command = lambda : controller.show_frame(perfil_usuario))
-		#button_voltar.pack(side=LEFT)
+		add_ingrediente = ttk.Button(conteiner_ingredientes, text ="Add", command = lambda : listar_ingredientes())
+		add_ingrediente.pack(side=LEFT, padx= 5)
+		listar_ingredienetesLabel = Label(self, text="", font=("Arial", "9"), justify=LEFT)
+		listar_ingredienetesLabel.place(x = 8, y = 200)
   
-	
 		# Modo Preparo
 		preparoLabel = Label(self, text="Modo Preparo:", font=("Arial", "14"))
-		preparoLabel.place(x = 8,y = 200)
-  
-		conteiner_preparo = Frame(self)
-		conteiner_preparo.place(x = 8,y = 228)
+		preparoLabel.place(x = 8,y = 400)
+		modo_preparo = Text(self, height = 10, width = 51)
+		modo_preparo.place(x = 8, y= 428)
 
-		preparo = Entry(conteiner_preparo)
-		preparo["width"] = 40 # largura da caixa de texto
-		preparo["font"] = fontePadrao
-		preparo.pack(side=LEFT)
 
 		# botão para adicionar a receita
-		button_salvar = ttk.Button(self, text ="Salvar Receita", command = lambda : controller.show_frame(Perfil_amigo))
+		button_salvar = ttk.Button(self, text ="Salvar Receita", command = lambda: salvar_receita)#lambda : controller.show_frame(Perfil_amigo))
 		button_salvar.place(x = 160,y = 610)
 
 class adicionar_amigo(tk.Frame):
