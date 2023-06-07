@@ -1,6 +1,9 @@
 import socket
 import pickle
 
+import os
+os.system('clear') or None
+
 dict = {'A': 1, 'B': 2, 'C': 3, 'marcos': 26}
 
 def server(host = 'localhost', port=8082):    
@@ -75,19 +78,23 @@ def split_mensagem(data):
 
 
 ########################## Requisições dos Clientes ########################## 
+# pronto
 def requisicao_login(data):
     '''Verifica se o nome de usuario existe e se a senha esta correta.
        :param data: mensagem enviada pelo cliente
        :return: retorna True se o nome e a senha estiverem corretos, caso contrario False
     '''
+    usuario = "mario"
+    senha_real = "123"
+    
     valid = False
     lista = split_mensagem(data)
     nome = lista[1]
     senha = lista[2]    
     
-    senha_real = dict.get(nome)
-    if  senha_real != None: # usuario exite, logo a senha existe. Mas a senha esta certa?
-        if str(senha_real) == senha:
+
+    if senha_real != None: # usuario exite, logo a senha existe. Mas a senha esta certa?
+        if senha_real == senha and nome == usuario:
             valid = True
     return str(valid)
     
@@ -126,17 +133,17 @@ def requisicao_adicionar_amigo(data):
 
     return str(valid)
     
+# em andamento
 def requisicao_perfil_proprio(data):
     lista = split_mensagem(data)
-    usuario = lista[1]
+    usuario = lista[1] #Dono do perfil
     
     resposta = "vazio" # resposta padrão
-    descrisao = "[Tenho 157 anos, e estou na faculdade a 117]"
-    
-    # deve retornar uma string: usuario descricao amigo_1:nun_receita amigo_2:nun_receita
-    
+    descrisao = "|Descricao com 65 caracteres, e apos cada 65 caracteres eu faco a quebra de linha pra poder ir pra a proxima linha. Descricao com 65 caracteres, e apos cada 65 caracteres eu faco a quebra de linha pra poder ir pra a proxima linha. Descricao com 65 caracteres."
+    lista_amigos = "|BatmaCozinheiro|padeiro32|CangacoCozineiro|MestreDiarreia|animalDaCozinha|A"
+        
     # verifica se ele existe no banco de dados
-    resposta = usuario + " " + descrisao + " " + "[A:123] " + "[B:6] " + "[C:55] "
+    resposta = descrisao + " " + lista_amigos
     
     return resposta
        

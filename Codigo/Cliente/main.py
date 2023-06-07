@@ -2,6 +2,17 @@ import tkinter as tk
 from tkinter import ttk
 from tkinter import *
 
+### import das funcionalidades
+import login
+import buscar_perfil_proprio
+
+# Variaveis Globais
+usuario_logado = "" # nome do usuario logado no sistema
+descricao_usuario = "" # descrição do perfil do usuario logado
+lista_amigos_usuario = ["", "", "", "", "", "", "", "", "", ""] # lista de amigos do usuario logado
+
+
+
 
 import os
 os.system('clear') or None
@@ -10,9 +21,6 @@ os.system('clear') or None
 LARGEFONT =("Verdana", 35)
 MIDFONT =("Verdana", 15)
 MINFONT =("Verdana", 9)
-
-# Variaveis Globais
-lista_ingredientes = [] # adicionar_receita
 
 
 
@@ -57,16 +65,23 @@ class tkinterApp(tk.Tk):
 
 # Tela de Login
 class Login(tk.Frame):
-	
-
 	def __init__(self, parent, controller):
 		def verificaSenha():
-			print(nome.get())
-			print(senha.get())
+			global usuario_logado, descricao_usuario, lista_amigos_usuario
+
+			valid = False   
+			if nome.get() != "" and senha.get() != "": # verifica se algo foi digitado
+				valid = login.logar(nome.get(), senha.get())
+    
+			if valid == True:
+				usuario_logado = nome.get()
+				descricao_usuario, lista_amigos_usuario = buscar_perfil_proprio.requisitar_perfil_proprio(usuario_logado)
+				controller.show_frame(perfil_usuario)
+			else:
+				logarLabel["text"] = "Login invalido!"
 			return True
 
 		tk.Frame.__init__(self, parent)
-		
 		fontePadrao = ("Arial", "11")
 
 		# titulo
@@ -109,34 +124,47 @@ class Login(tk.Frame):
 		autenticar["text"] = "Logar"
 		autenticar["font"] = ("Calibri", "8")
 		autenticar["width"] = 12
-		autenticar["command"] = lambda : controller.show_frame(perfil_usuario) if verificaSenha() == True  else print("Login invalido")
+		autenticar["command"] = lambda : verificaSenha()
 		autenticar.pack()
+		logarLabel = Label(conteiner_logar, text="", font=fontePadrao)
+		logarLabel.pack(side=LEFT, pady= 10, padx= 10)
 		
 
 # Tela perfil usuario
 class perfil_usuario(tk.Frame):
-  
+	
 	def __init__(self, parent, controller):
+		def setState(): # atualiza as informações que podem mudar ao longo da execução
+			usuariolabel["text"] = usuario_logado
+			descricaolabel["text"] = descricao_usuario
+			amigo_list_1["text"] = lista_amigos_usuario[0]
+			amigo_list_2["text"] = lista_amigos_usuario[1]
+			amigo_list_3["text"] = lista_amigos_usuario[2]
+			amigo_list_4["text"] = lista_amigos_usuario[3]
+			amigo_list_5["text"] = lista_amigos_usuario[4]
+			amigo_list_6["text"] = lista_amigos_usuario[5]
+			amigo_list_7["text"] = lista_amigos_usuario[6]
+			amigo_list_8["text"] = lista_amigos_usuario[7]
+			amigo_list_9["text"] = lista_amigos_usuario[8]
+			amigo_list_10["text"] = lista_amigos_usuario[9]
+			
+			self.after(40, setState) # atualiza os widget 25 vezes por segundo
+   
 		def commando(event):
 			controller.show_frame(Perfil_amigo)
    
 		tk.Frame.__init__(self, parent)
-
+  
 		# Nome do usuario
-		label = ttk.Label(self, text ="Nome Usuario", font = MIDFONT)
-		label.place(x = 10,y = 10)
+		usuariolabel = ttk.Label(self, text ="", font = MIDFONT)
+		usuariolabel.place(x = 10,y = 10)
   
 		# Descrição do perfil Cada linha tem no maximo 65 caracteres. Total de 260 caracteres para a descrição
 		# adiocionar altomaticamente os - para quebrar uma palavra logo 260 - 3 caracteres por descrição.
 		# posso fazer um loop como nos botoes e divir a string nesse valor
-		label = ttk.Label(self, text ="Tenho 126 anos, e a 97 estou na universidade universidade univers", font = MINFONT)
-		label.place(x = 8,y = 60)
-		label = ttk.Label(self, text ="Tenho 126 anos, e a 97 estou na universidade universidade univers", font = MINFONT)
-		label.place(x = 8,y = 75)
-		label = ttk.Label(self, text ="Tenho 126 anos, e a 97 estou na universidade universidade univers", font = MINFONT)
-		label.place(x = 8,y = 90)
-		label = ttk.Label(self, text ="Tenho 126 anos, e a 97 estou na universidade universidade univers", font = MINFONT)
-		label.place(x = 8,y = 105)
+		descricaolabel = ttk.Label(self, text ="", font = MINFONT, justify=LEFT)
+		descricaolabel.place(x = 8,y = 60)
+		
 
 
 		# Botão da lista de receita do usuario
@@ -144,21 +172,66 @@ class perfil_usuario(tk.Frame):
 		button1.place(x = 10,y = 150)
   
 		# lista de Amigos
-		num_amigos = 10
-		num_receitas = 1
+		# Amigo 1
+		amigo_list_1 = tk.Label(text= lista_amigos_usuario[0], justify=LEFT, width=51, height=2, master=self, borderwidth=1, relief="groove")
+		amigo_list_1.place(x = 10,y = 200 + (0*40))
+		amigo_list_1.config(bg= "#e0e1e0")
+		amigo_list_1.bind("<Button-1>", commando)
+		# Amigo 2
+		amigo_list_2 = tk.Label(text= lista_amigos_usuario[1], justify=LEFT, width=51, height=2, master=self, borderwidth=1, relief="groove")
+		amigo_list_2.place(x = 10,y = 200 + (1*40))
+		amigo_list_2.config(bg= "#e0e1e0")
+		amigo_list_2.bind("<Button-1>", commando)
+		# Amigo 3
+		amigo_list_3 = tk.Label(text= lista_amigos_usuario[2], justify=LEFT, width=51, height=2, master=self, borderwidth=1, relief="groove")
+		amigo_list_3.place(x = 10,y = 200 + (2*40))
+		amigo_list_3.config(bg= "#e0e1e0")
+		amigo_list_3.bind("<Button-1>", commando)
+		# Amigo 4
+		amigo_list_4 = tk.Label(text= lista_amigos_usuario[3], justify=LEFT, width=51, height=2, master=self, borderwidth=1, relief="groove")
+		amigo_list_4.place(x = 10,y = 200 + (3*40))
+		amigo_list_4.config(bg= "#e0e1e0")
+		amigo_list_4.bind("<Button-1>", commando)
+		# Amigo 5
+		amigo_list_5 = tk.Label(text= lista_amigos_usuario[4], justify=LEFT, width=51, height=2, master=self, borderwidth=1, relief="groove")
+		amigo_list_5.place(x = 10,y = 200 + (4*40))
+		amigo_list_5.config(bg= "#e0e1e0")
+		amigo_list_5.bind("<Button-1>", commando)
+		# Amigo 6
+		amigo_list_6 = tk.Label(text= lista_amigos_usuario[5], justify=LEFT, width=51, height=2, master=self, borderwidth=1, relief="groove")
+		amigo_list_6.place(x = 10,y = 200 + (5*40))
+		amigo_list_6.config(bg= "#e0e1e0")
+		amigo_list_6.bind("<Button-1>", commando)
+		# Amigo 7
+		amigo_list_7 = tk.Label(text= lista_amigos_usuario[6], justify=LEFT, width=51, height=2, master=self, borderwidth=1, relief="groove")
+		amigo_list_7.place(x = 10,y = 200 + (6*40))
+		amigo_list_7.config(bg= "#e0e1e0")
+		amigo_list_7.bind("<Button-1>", commando)
+		# Amigo 8
+		amigo_list_8 = tk.Label(text= lista_amigos_usuario[7], justify=LEFT, width=51, height=2, master=self, borderwidth=1, relief="groove")
+		amigo_list_8.place(x = 10,y = 200 + (7*40))
+		amigo_list_8.config(bg= "#e0e1e0")
+		amigo_list_8.bind("<Button-1>", commando)
+		# Amigo 9	
+		amigo_list_9 = tk.Label(text= lista_amigos_usuario[8], justify=LEFT, width=51, height=2, master=self, borderwidth=1, relief="groove")
+		amigo_list_9.place(x = 10,y = 200 + (8*40))
+		amigo_list_9.config(bg= "#e0e1e0")
+		amigo_list_9.bind("<Button-1>", commando)
+		# Amigo 10
+		amigo_list_10 = tk.Label(text= lista_amigos_usuario[9], justify=LEFT, width=51, height=2, master=self, borderwidth=1, relief="groove")
+		amigo_list_10.place(x = 10,y = 200 + (9*40))
+		amigo_list_10.config(bg= "#e0e1e0")
+		amigo_list_10.bind("<Button-1>", commando)
+
   
-		
-		for i in range(num_amigos): # tem de a largura dos botoes
-			button_list = tk.Label(text="Ainda não consigo colocar no canto", justify=LEFT, width=51, height=2, master=self, borderwidth=1, relief="groove")
-			button_list.place(x = 10,y = 200 + (i*40))
-			button_list.config(bg= "#e0e1e0")
-			button_list.bind("<Button-1>", commando)
 
 		
 		# botão para adicionar amigo
 		button2 = ttk.Button(self, text ="Adicionar Amigo", command = lambda : controller.show_frame(adicionar_amigo))
 		button2.place(x = 160,y = 610)
-
+		setState()
+   
+   
 # Exibir perfil dos amigos
 class Perfil_amigo(tk.Frame):
 	
@@ -250,6 +323,8 @@ class adicionar_receita(tk.Frame):
 	
 
 	def __init__(self, parent, controller):
+		lista_ingredientes = [] # adicionar_receita
+  
 		def salvar_receita():
 			preparo = modo_preparo.get(1.0,END)
 			controller.show_frame(perfil_usuario)
@@ -354,8 +429,7 @@ class adicionar_amigo(tk.Frame):
 		button_buscar = ttk.Button(self, text ="Adiocionar Amigo", command = lambda : controller.show_frame(perfil_usuario))
 		button_buscar.place(x = 160,y = 610)
 		
-
-
+    
 # Driver Code
 app = tkinterApp()
 app.title("Vó Maria")
