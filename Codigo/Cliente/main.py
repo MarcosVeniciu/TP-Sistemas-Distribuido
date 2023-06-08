@@ -5,12 +5,20 @@ from tkinter import *
 ### import das funcionalidades
 import login
 import buscar_perfil_proprio
+import buscar_perfil_amigo
+import get_receita
+import add_amigo
 
 # Variaveis Globais
 usuario_logado = "" # nome do usuario logado no sistema
 descricao_usuario = "" # descrição do perfil do usuario logado
+descricao_amigo = "" # descrição do perfil do usuario logado
 lista_amigos_usuario = ["", "", "", "", "", "", "", "", "", ""] # lista de amigos do usuario logado
-
+usuario_buscado = "" # nome do amigo que foi selecionado na lista de amigos ou do proprio usuario quando verifica a propria lista de receitas
+lista_receitas = ["", "", "", "", "", "", "", "", "", ""] # lista de receitas
+ingredientes = "" # lista de ingredientes retornados pelo servidor
+modo_preparo = "" # Modo de preparo da receita
+titulo_receita = "" # Nome da receita que esta sendo requisitada
 
 
 
@@ -44,7 +52,7 @@ class tkinterApp(tk.Tk):
 
 		# iterating through a tuple consisting
 		# of the different page layouts
-		for F in (Login, perfil_usuario, Perfil_amigo, mostrar_receita, adicionar_receita, adicionar_amigo):
+		for F in (Login, perfil_usuario, Perfil_usuario_receitas, Perfil_amigo, mostrar_receita, adicionar_receita, adicionar_amigo):
 
 			frame = F(container, self)
 
@@ -150,8 +158,19 @@ class perfil_usuario(tk.Frame):
 			
 			self.after(40, setState) # atualiza os widget 25 vezes por segundo
    
-		def commando(event):
-			controller.show_frame(Perfil_amigo)
+		def commando(amigo):
+			global usuario_buscado, lista_receitas, descricao_amigo 
+			if amigo != "":
+				usuario_buscado = amigo
+				descricao_amigo, lista_receitas = buscar_perfil_amigo.requisitar_perfil_amigo(usuario_logado, amigo)
+				controller.show_frame(Perfil_amigo)
+		def commando_2(amigo):
+			global usuario_buscado, lista_receitas, descricao_amigo 
+			if amigo != "":
+				usuario_buscado = amigo
+				descricao_amigo, lista_receitas = buscar_perfil_amigo.requisitar_perfil_amigo(usuario_logado, amigo)
+				controller.show_frame(Perfil_usuario_receitas)
+    
    
 		tk.Frame.__init__(self, parent)
   
@@ -159,70 +178,48 @@ class perfil_usuario(tk.Frame):
 		usuariolabel = ttk.Label(self, text ="", font = MIDFONT)
 		usuariolabel.place(x = 10,y = 10)
   
-		# Descrição do perfil Cada linha tem no maximo 65 caracteres. Total de 260 caracteres para a descrição
-		# adiocionar altomaticamente os - para quebrar uma palavra logo 260 - 3 caracteres por descrição.
-		# posso fazer um loop como nos botoes e divir a string nesse valor
+		# Descrição do perfil 
 		descricaolabel = ttk.Label(self, text ="", font = MINFONT, justify=LEFT)
 		descricaolabel.place(x = 8,y = 60)
 		
 
 
 		# Botão da lista de receita do usuario
-		button1 = ttk.Button(self, text ="Minhas Receitas", width=50, command = lambda : controller.show_frame(Perfil_amigo))
-		button1.place(x = 10,y = 150)
+		button1 = ttk.Button(self, text ="Minhas Receitas", width=50, command = lambda : commando_2(usuario_logado))
+		button1.place(x = 10,y = 140)
   
 		# lista de Amigos
 		# Amigo 1
-		amigo_list_1 = tk.Label(text= lista_amigos_usuario[0], justify=LEFT, width=51, height=2, master=self, borderwidth=1, relief="groove")
-		amigo_list_1.place(x = 10,y = 200 + (0*40))
-		amigo_list_1.config(bg= "#e0e1e0")
-		amigo_list_1.bind("<Button-1>", commando)
+		y_base = 185
+		amigo_list_1 = ttk.Button(self, text = lista_amigos_usuario[0], width=50, command = lambda : commando(lista_amigos_usuario[0]))
+		amigo_list_1.place(x = 10,y =y_base + (28*0))
 		# Amigo 2
-		amigo_list_2 = tk.Label(text= lista_amigos_usuario[1], justify=LEFT, width=51, height=2, master=self, borderwidth=1, relief="groove")
-		amigo_list_2.place(x = 10,y = 200 + (1*40))
-		amigo_list_2.config(bg= "#e0e1e0")
-		amigo_list_2.bind("<Button-1>", commando)
+		amigo_list_2 = ttk.Button(self, text = lista_amigos_usuario[1], width=50, command = lambda : commando(lista_amigos_usuario[1]))
+		amigo_list_2.place(x = 10,y = y_base + (28*1))
 		# Amigo 3
-		amigo_list_3 = tk.Label(text= lista_amigos_usuario[2], justify=LEFT, width=51, height=2, master=self, borderwidth=1, relief="groove")
-		amigo_list_3.place(x = 10,y = 200 + (2*40))
-		amigo_list_3.config(bg= "#e0e1e0")
-		amigo_list_3.bind("<Button-1>", commando)
+		amigo_list_3 = ttk.Button(self, text = lista_amigos_usuario[2], width=50, command = lambda : commando(lista_amigos_usuario[2]))
+		amigo_list_3.place(x = 10,y = y_base + (28*2))
 		# Amigo 4
-		amigo_list_4 = tk.Label(text= lista_amigos_usuario[3], justify=LEFT, width=51, height=2, master=self, borderwidth=1, relief="groove")
-		amigo_list_4.place(x = 10,y = 200 + (3*40))
-		amigo_list_4.config(bg= "#e0e1e0")
-		amigo_list_4.bind("<Button-1>", commando)
+		amigo_list_4 = ttk.Button(self, text = lista_amigos_usuario[3], width=50, command = lambda : commando(lista_amigos_usuario[3]))
+		amigo_list_4.place(x = 10,y = y_base + (28*3))
 		# Amigo 5
-		amigo_list_5 = tk.Label(text= lista_amigos_usuario[4], justify=LEFT, width=51, height=2, master=self, borderwidth=1, relief="groove")
-		amigo_list_5.place(x = 10,y = 200 + (4*40))
-		amigo_list_5.config(bg= "#e0e1e0")
-		amigo_list_5.bind("<Button-1>", commando)
+		amigo_list_5 = ttk.Button(self, text = lista_amigos_usuario[4], width=50, command = lambda : commando(lista_amigos_usuario[4]))
+		amigo_list_5.place(x = 10,y = y_base + (28*4))
 		# Amigo 6
-		amigo_list_6 = tk.Label(text= lista_amigos_usuario[5], justify=LEFT, width=51, height=2, master=self, borderwidth=1, relief="groove")
-		amigo_list_6.place(x = 10,y = 200 + (5*40))
-		amigo_list_6.config(bg= "#e0e1e0")
-		amigo_list_6.bind("<Button-1>", commando)
+		amigo_list_6 = ttk.Button(self, text = lista_amigos_usuario[5], width=50, command = lambda : commando(lista_amigos_usuario[5]))
+		amigo_list_6.place(x = 10,y = y_base + (28*5))
 		# Amigo 7
-		amigo_list_7 = tk.Label(text= lista_amigos_usuario[6], justify=LEFT, width=51, height=2, master=self, borderwidth=1, relief="groove")
-		amigo_list_7.place(x = 10,y = 200 + (6*40))
-		amigo_list_7.config(bg= "#e0e1e0")
-		amigo_list_7.bind("<Button-1>", commando)
+		amigo_list_7 = ttk.Button(self, text = lista_amigos_usuario[6], width=50, command = lambda : commando(lista_amigos_usuario[6]))
+		amigo_list_7.place(x = 10,y = y_base + (28*6))
 		# Amigo 8
-		amigo_list_8 = tk.Label(text= lista_amigos_usuario[7], justify=LEFT, width=51, height=2, master=self, borderwidth=1, relief="groove")
-		amigo_list_8.place(x = 10,y = 200 + (7*40))
-		amigo_list_8.config(bg= "#e0e1e0")
-		amigo_list_8.bind("<Button-1>", commando)
+		amigo_list_8 = ttk.Button(self, text = lista_amigos_usuario[7], width=50, command = lambda : commando(lista_amigos_usuario[7]))
+		amigo_list_8.place(x = 10,y = y_base + (28*7))
 		# Amigo 9	
-		amigo_list_9 = tk.Label(text= lista_amigos_usuario[8], justify=LEFT, width=51, height=2, master=self, borderwidth=1, relief="groove")
-		amigo_list_9.place(x = 10,y = 200 + (8*40))
-		amigo_list_9.config(bg= "#e0e1e0")
-		amigo_list_9.bind("<Button-1>", commando)
+		amigo_list_9 = ttk.Button(self, text = lista_amigos_usuario[8], width=50, command = lambda : commando(lista_amigos_usuario[8]))
+		amigo_list_9.place(x = 10,y = y_base + (28*8))
 		# Amigo 10
-		amigo_list_10 = tk.Label(text= lista_amigos_usuario[9], justify=LEFT, width=51, height=2, master=self, borderwidth=1, relief="groove")
-		amigo_list_10.place(x = 10,y = 200 + (9*40))
-		amigo_list_10.config(bg= "#e0e1e0")
-		amigo_list_10.bind("<Button-1>", commando)
-
+		amigo_list_10 = ttk.Button(self, text = lista_amigos_usuario[9], width=50, command = lambda : commando(lista_amigos_usuario[9]))
+		amigo_list_10.place(x = 10,y = y_base + (28*9))
   
 
 		
@@ -231,55 +228,171 @@ class perfil_usuario(tk.Frame):
 		button2.place(x = 160,y = 610)
 		setState()
    
-   
-# Exibir perfil dos amigos
-class Perfil_amigo(tk.Frame):
-	
+# mostra a lista de receitas do usuario logado
+class Perfil_usuario_receitas(tk.Frame):
+
 	def __init__(self, parent, controller):
-		
+		def setState():
+			label["text"] = usuario_buscado
+			descricaolabel["text"] = descricao_amigo
+
+			receita_list_1["text"] = lista_receitas[0]
+			receita_list_2["text"] = lista_receitas[1]
+			receita_list_3["text"] = lista_receitas[2]
+			receita_list_4["text"] = lista_receitas[3]
+			receita_list_5["text"] = lista_receitas[4]
+			receita_list_6["text"] = lista_receitas[5]
+			receita_list_7["text"] = lista_receitas[6]
+			receita_list_8["text"] = lista_receitas[7]
+			receita_list_9["text"] = lista_receitas[8]
+			receita_list_10["text"] = lista_receitas[9]
+			
+			self.after(40, setState) # atualiza os widget 25 vezes por segundo
+		def commando(receita):
+			global ingredientes, modo_preparo, titulo_receita
+			if receita != "":
+				titulo_receita = receita
+				ingredientes, modo_preparo = get_receita.get_receita(usuario_buscado, receita)
+				controller.show_frame(mostrar_receita)
+    
 		tk.Frame.__init__(self, parent)
 
-		nome = "Nome Usuario"
 		# botão para voltar a tela anterior
 		button_voltar = ttk.Button(self, text ="Voltar", command = lambda : controller.show_frame(perfil_usuario))
 		button_voltar.place(x = 340,y = 10)
 		
 		# Nome do usuario
-		label = ttk.Label(self, text =nome, font = MIDFONT)
+		label = ttk.Label(self, text ="", font = MIDFONT)
 		label.place(x = 10,y = 10)
   
-		# Descrição do perfil Cada linha tem no maximo 65 caracteres. Total de 260 caracteres para a descrição
-		# adiocionar altomaticamente os - para quebrar uma palavra logo 260 - 3 caracteres por descrição.
-		# posso fazer um loop como nos botoes e divir a string nesse valor
-		label = ttk.Label(self, text ="Tenho 126 anos, e a 97 estou na universidade universidade univers", font = MINFONT)
-		label.place(x = 8,y = 60)
-		label = ttk.Label(self, text ="Tenho 126 anos, e a 97 estou na universidade universidade univers", font = MINFONT)
-		label.place(x = 8,y = 75)
-		label = ttk.Label(self, text ="Tenho 126 anos, e a 97 estou na universidade universidade univers", font = MINFONT)
-		label.place(x = 8,y = 90)
-		label = ttk.Label(self, text ="Tenho 126 anos, e a 97 estou na universidade universidade univers", font = MINFONT)
-		label.place(x = 8,y = 105)
-
+		# Descrição do perfil
+		descricaolabel = ttk.Label(self, text ="", font = MINFONT, justify=LEFT)
+		descricaolabel.place(x = 8,y = 60)
   
-		# lista de Amigos
-		num_amigos = 16
-		num_receitas = 1
-		palavra = "Receita de Bacalhau				"
-  
-		for i in range(num_amigos): # tem de a largura dos botoes
-			button1 = ttk.Button(self, text = palavra + str(num_receitas + i+10), 
-								 width=50,
-								 command = lambda : controller.show_frame(mostrar_receita))
-			button1.place(x = 10,y = 150 + (28*i))
+		# lista de Receitas
+		# Receita 1
+		receita_list_1 = ttk.Button(self, text = lista_receitas[0], width=50, command = lambda : commando(lista_receitas[0]))
+		receita_list_1.place(x = 10,y = 150 + (28*0))
+		# Receita 2
+		receita_list_2 = ttk.Button(self, text = lista_receitas[1], width=50, command = lambda : commando(lista_receitas[1]))
+		receita_list_2.place(x = 10,y = 150 + (28*1))
+		# Receita 3
+		receita_list_3 = ttk.Button(self, text = lista_receitas[2], width=50, command = lambda : commando(lista_receitas[2]))
+		receita_list_3.place(x = 10,y = 150 + (28*2))
+		# Receita 4
+		receita_list_4 = ttk.Button(self, text = lista_receitas[3], width=50, command = lambda : commando(lista_receitas[3]))
+		receita_list_4.place(x = 10,y = 150 + (28*3))
+		# Receita 5
+		receita_list_5 = ttk.Button(self, text = lista_receitas[4], width=50, command = lambda : commando(lista_receitas[4]))
+		receita_list_5.place(x = 10,y = 150 + (28*4))
+		# Receita 6
+		receita_list_6 = ttk.Button(self, text = lista_receitas[5], width=50, command = lambda : commando(lista_receitas[5]))
+		receita_list_6.place(x = 10,y = 150 + (28*5))
+		# Receita 7
+		receita_list_7 = ttk.Button(self, text = lista_receitas[6], width=50, command = lambda : commando(lista_receitas[6]))
+		receita_list_7.place(x = 10,y = 150 + (28*6))
+		# Receita 8
+		receita_list_8 = ttk.Button(self, text = lista_receitas[7], width=50, command = lambda : commando(lista_receitas[7]))
+		receita_list_8.place(x = 10,y = 150 + (28*7))
+		# Receita 9	
+		receita_list_9 = ttk.Button(self, text = lista_receitas[8], width=50, command = lambda : commando(lista_receitas[8]))
+		receita_list_9.place(x = 10,y = 150 + (28*8))
+		# Receita 10
+		receita_list_10 = ttk.Button(self, text = lista_receitas[9], width=50, command = lambda : commando(lista_receitas[9]))
+		receita_list_10.place(x = 10,y = 150 + (28*9))
 		
 		# botão para adicionar receitas
-		if nome != "Usuario logado":
-			button2 = ttk.Button(self, text ="Adicionar Receita", command = lambda : controller.show_frame(adicionar_receita))
-			button2.place(x = 160,y = 610)
+		button2 = ttk.Button(self, text = "Adicionar Receita", command = lambda : controller.show_frame(adicionar_receita))
+		button2.place(x = 160,y = 610)
+
+		setState()
+
+  
+# Exibir perfil dos amigos
+class Perfil_amigo(tk.Frame):
+
+	def __init__(self, parent, controller):
+		def setState():
+			label["text"] = usuario_buscado
+			descricaolabel["text"] = descricao_amigo
+
+			receita_list_1["text"] = lista_receitas[0]
+			receita_list_2["text"] = lista_receitas[1]
+			receita_list_3["text"] = lista_receitas[2]
+			receita_list_4["text"] = lista_receitas[3]
+			receita_list_5["text"] = lista_receitas[4]
+			receita_list_6["text"] = lista_receitas[5]
+			receita_list_7["text"] = lista_receitas[6]
+			receita_list_8["text"] = lista_receitas[7]
+			receita_list_9["text"] = lista_receitas[8]
+			receita_list_10["text"] = lista_receitas[9]
+			
+			self.after(40, setState) # atualiza os widget 25 vezes por segundo
+		def commando(receita):
+			global ingredientes, modo_preparo, titulo_receita
+			if receita != "":
+				titulo_receita = receita
+				ingredientes, modo_preparo = get_receita.get_receita(usuario_buscado, receita)
+				controller.show_frame(mostrar_receita)
+    
+		tk.Frame.__init__(self, parent)
+
+		# botão para voltar a tela anterior
+		button_voltar = ttk.Button(self, text ="Voltar", command = lambda : controller.show_frame(perfil_usuario))
+		button_voltar.place(x = 340,y = 10)
+		
+		# Nome do usuario
+		label = ttk.Label(self, text ="", font = MIDFONT)
+		label.place(x = 10,y = 10)
+  
+		# Descrição do perfil
+		descricaolabel = ttk.Label(self, text ="", font = MINFONT, justify=LEFT)
+		descricaolabel.place(x = 8,y = 60)
+  
+		# lista de Receitas
+		# Receita 1
+		receita_list_1 = ttk.Button(self, text = lista_receitas[0], width=50, command = lambda : commando(lista_receitas[0]))
+		receita_list_1.place(x = 10,y = 150 + (28*0))
+		# Receita 2
+		receita_list_2 = ttk.Button(self, text = lista_receitas[1], width=50, command = lambda : commando(lista_receitas[1]))
+		receita_list_2.place(x = 10,y = 150 + (28*1))
+		# Receita 3
+		receita_list_3 = ttk.Button(self, text = lista_receitas[2], width=50, command = lambda : commando(lista_receitas[2]))
+		receita_list_3.place(x = 10,y = 150 + (28*2))
+		# Receita 4
+		receita_list_4 = ttk.Button(self, text = lista_receitas[3], width=50, command = lambda : commando(lista_receitas[3]))
+		receita_list_4.place(x = 10,y = 150 + (28*3))
+		# Receita 5
+		receita_list_5 = ttk.Button(self, text = lista_receitas[4], width=50, command = lambda : commando(lista_receitas[4]))
+		receita_list_5.place(x = 10,y = 150 + (28*4))
+		# Receita 6
+		receita_list_6 = ttk.Button(self, text = lista_receitas[5], width=50, command = lambda : commando(lista_receitas[5]))
+		receita_list_6.place(x = 10,y = 150 + (28*5))
+		# Receita 7
+		receita_list_7 = ttk.Button(self, text = lista_receitas[6], width=50, command = lambda : commando(lista_receitas[6]))
+		receita_list_7.place(x = 10,y = 150 + (28*6))
+		# Receita 8
+		receita_list_8 = ttk.Button(self, text = lista_receitas[7], width=50, command = lambda : commando(lista_receitas[7]))
+		receita_list_8.place(x = 10,y = 150 + (28*7))
+		# Receita 9	
+		receita_list_9 = ttk.Button(self, text = lista_receitas[8], width=50, command = lambda : commando(lista_receitas[8]))
+		receita_list_9.place(x = 10,y = 150 + (28*8))
+		# Receita 10
+		receita_list_10 = ttk.Button(self, text = lista_receitas[9], width=50, command = lambda : commando(lista_receitas[9]))
+		receita_list_10.place(x = 10,y = 150 + (28*9))
+		
+		setState()
 
 # Tela em que mostra a receita escolhida
 class mostrar_receita(tk.Frame):
 	def __init__(self, parent, controller):
+		def setState():
+			label["text"] = titulo_receita
+			lista_ingredienteslabel["text"] = ingredientes
+			label_preparo["text"] = modo_preparo
+
+			self.after(40, setState) # atualiza os widget 25 vezes por segundo
+   
 		tk.Frame.__init__(self, parent)
   
 		# botão para voltar a tela anterior
@@ -287,7 +400,7 @@ class mostrar_receita(tk.Frame):
 		button_voltar.place(x = 340,y = 10)
   
 		# Titulo da receita
-		label = ttk.Label(self, text ="Receita de Bacalhau", font = MIDFONT)
+		label = ttk.Label(self, text ="", font = MIDFONT)
 		label.place(x = 10,y = 10)
   
 		# Botão avaliar receita
@@ -297,27 +410,21 @@ class mostrar_receita(tk.Frame):
 		# Ingredientes
 		label_ingredientes = ttk.Label(self, text ="Ingredientes:", font = MIDFONT)
 		label_ingredientes.place(x = 10,y = 70)
-
-		ingredientes = ["2kg de bacalhau", "500g de manteiga", "2L de água sanitaria", "2 batatas"]	
-		nun_ingredientes = len(ingredientes)
 		
-		for i in range(nun_ingredientes):
-			label = ttk.Label(self, text ="   - " + ingredientes[i], font = MINFONT)
-			label.place(x = 10,y = 100 + (i*20))
+		# Lista de ingredientes
+		lista_ingredienteslabel = ttk.Label(self, text ="", font = MINFONT)
+		lista_ingredienteslabel.place(x = 10,y = 100)
    
    
 		# Modo Preparo
-		linha_inicio = 100 + (nun_ingredientes*20) + 50
+		linha_inicio = 300 + 50
 		label_ingredientes = ttk.Label(self, text ="Modo Preparo:", font = MIDFONT)
 		label_ingredientes.place(x = 10,y = linha_inicio)
 
-		lista_preparo = ["Junta tudo em uma panela", "joga a agua sanitaria e torce pra dar certo", " se não der certo, corre"]	
-		nun_pasos = len(lista_preparo)
-		
-		for i in range(nun_pasos):
-			label = ttk.Label(self, text =lista_preparo[i], font = MINFONT)
-			label.place(x = 10,y = linha_inicio + 30 + (i*20))
-  
+				
+		label_preparo = ttk.Label(self, text ="", font = MINFONT)
+		label_preparo.place(x = 10,y = linha_inicio + 30)
+		setState()
 
 class adicionar_receita(tk.Frame):
 	
@@ -398,9 +505,25 @@ class adicionar_receita(tk.Frame):
 
 class adicionar_amigo(tk.Frame):
 	def __init__(self, parent, controller):
+		def setState():
+			label_resposta["text"] = ""
+
+			self.after(10001, setState) # atualiza os widget 25 vezes por segundo
+   
+   
+		def adicionarAmigo():
+			global descricao_usuario, lista_amigos_usuario
+			if nome.get() != "" and nome.get() != usuario_logado:
+				resposta = add_amigo.add_amigo(usuario_logado, nome.get())		
+				if resposta == "adicionado":
+					descricao_usuario, lista_amigos_usuario = buscar_perfil_proprio.requisitar_perfil_proprio(usuario_logado)
+					controller.show_frame(perfil_usuario)
+				else:
+					label_resposta["text"] = resposta
+			
 		tk.Frame.__init__(self, parent)
 		fontePadrao = ("Arial", "11")
-  
+		
 		# botão para voltar a tela anterior
 		button_voltar = ttk.Button(self, text ="Voltar", command = lambda : controller.show_frame(perfil_usuario))
 		button_voltar.place(x = 340,y = 10)
@@ -421,14 +544,17 @@ class adicionar_amigo(tk.Frame):
 		nome["width"] = 40 # largura da caixa de texto
 		nome["font"] = fontePadrao
 		nome.pack(side=LEFT)
-  
+
+		label_resposta = Label(self, text="", font=("Arial", "10"), justify=LEFT)
+		label_resposta.place(x = 8,y = 150)
+   
 
 		
 
 		# botão para adicionar a receita
-		button_buscar = ttk.Button(self, text ="Adiocionar Amigo", command = lambda : controller.show_frame(perfil_usuario))
+		button_buscar = ttk.Button(self, text ="Adicionar Amigo", command = lambda : adicionarAmigo())
 		button_buscar.place(x = 160,y = 610)
-		
+		setState()
     
 # Driver Code
 app = tkinterApp()

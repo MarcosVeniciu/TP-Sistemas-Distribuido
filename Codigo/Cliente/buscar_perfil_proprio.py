@@ -14,9 +14,15 @@ def requisitar_perfil_proprio(usuario):
     
     return descricao, lista_amigos
 
+
+# Meu nome e mario, tenho 150 anos e estudo computacao desde quando inventaram o computador e ate hoje nao sei nada. Meu shonho e formar.
+# Meu nome e mario, tenho 150 anos e estudo computacao desde quando
+# inventaram o computador e ate hoje nao sei nada. Meu shonho e for
+
+
 def get_descricao(resposta):
     descricao = ""
-    for caractere in resposta[1:]:
+    for caractere in resposta:
         if caractere != "|":
             descricao += caractere
         else:
@@ -29,22 +35,21 @@ def formatar_descricao(descricao):
     linha = ""
     for i in range(len(descricao)):
         if i == 65 or i == 130 or i == 195:
-           linha += "\n" + descricao[i]  if descricao[i] != " " else "\n" 
+           linha +=  "\n" + descricao[i]  if descricao[i] != " " else "\n" 
         else:
             linha += descricao[i]
-    
     return linha 
             
 def get_lista_amigos(resposta):
     lista_amigos = []                                                                                           
-    lista = resposta.split("|")[2:]
-    
+    lista = resposta.split("|")[1:] # Pega tudo que esta da descrição em diante 
+
     for pessoa in lista:
         lista_amigos.append(pessoa)
     
     for i in range(10 - len(lista_amigos)):
         lista_amigos.append("")
-        
+
     return lista_amigos
     
     
