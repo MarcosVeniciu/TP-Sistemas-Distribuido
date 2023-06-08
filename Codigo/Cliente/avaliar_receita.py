@@ -4,8 +4,11 @@ def avaliar_receita(usuario, avaliado, nome_receita):
     usuario = max(usuario.split(" "))# remove os espaços em branco caso tenha
     avaliado = max(avaliado.split(" "))# remove os espaços em branco caso tenha
     
-    requisicao = "6 " + usuario + " " + avaliado + " " + nome_receita
+    requisicao = "6 " + usuario + " " + avaliado + " " + ajustar_titulo(nome_receita)
     return cliente.requisicao(requisicao)
+
+def ajustar_titulo(titulo):
+    return titulo.replace(" ", "_")
 
 # Teste
 #usuario = input("Nome: ")

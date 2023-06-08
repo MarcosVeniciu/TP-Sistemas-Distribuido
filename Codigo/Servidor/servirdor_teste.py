@@ -43,11 +43,11 @@ descricoes = {'mario': "Meu nome e mario, tenho 150 anos e estudo computacao des
               'animalDaCozinha': "Falo!!!!!!",
               'MestreDiarreia': "Gororoba do mais alto nivel!"}
 
-receitas_preparo = {'Bacalhau_com_limao': "1kg de bacalhau|10 litros de vinagre]" + " joga tudo na panela e torce pra dar certo.]",
-                    'Bolo_de_sardinha': "1kg de sardinha|10 litros de vinagre]" + " joga tudo na panela e torce pra dar certo.]",
-                    'Carangueijo_com_quiabo': "1kg de carangueijo|10 litros de vinagre]" + " joga tudo na panela e torce pra dar certo.]",
-                    'Feijoada_de_frando': "1kg de Feijao|10 litros de vinagre]" + " joga tudo na panela e torce pra dar certo.]",
-                    'Angu_com_laranja': "1kg de laranja|10 litros de vinagre]" + " joga tudo na panela e torce pra dar certo.]"}
+receitas_preparo = {'Bacalhau_com_limao': "1kg de bacalhau|10 litros de vinagre]joga tudo na panela e torce pra dar certo.",
+                    'Bolo_de_sardinha': "1kg de sardinha|10 litros de vinagre]joga tudo na panela e torce pra dar certo.",
+                    'Carangueijo_com_quiabo': "1kg de carangueijo|10 litros de vinagre]joga tudo na panela e torce pra dar certo.",
+                    'Feijoada_de_frando': "1kg de Feijao|10 litros de vinagre]joga tudo na panela e torce pra dar certo.",
+                    'Angu_com_laranja': "1kg de laranja|10 litros de vinagre]joga tudo na panela e torce pra dar certo."}
 
 garfadas = {'Bacalhau_com_limao': 10,
             'Bolo_de_sardinha': 8,
@@ -106,7 +106,11 @@ def server(host = 'localhost', port=8082):
                 resposta = requisicao_get_receita(data)
                 
             if requisicao[0] == "6": # requisição para buscar o perfil proprio
-                resposta = requisicao_garfada(data)
+                resposta = requisicao_add_garfada(data)
+            
+            if requisicao[0] == "7": # requisição para buscar o numero de garfadas na receita
+                resposta = requisicao_get_garfada(data) 
+                
 
             client.send(resposta.encode("ascii"))
             print ("Mensagem enviada %s bytes back to %s" % (resposta, address))       
@@ -147,24 +151,36 @@ def requisicao_login(data):
         if senha_real == senha:
             valid = True
     return str(valid)
-    
+
+# pronto
 def requisicao_adicionar_receita(data):   
     '''Adiciona uma nova receita ao banco de dados do usuario.
        :param data: mensagem recebida com o nome do usuairo que esta adicionando a receita
                     e a receita que sera adicionada
         :return: true caso tenha sido salva com sucesso ou false caso contrario'''
-         
+    # "1 " + nome + " " + titulo + " " + ingredientes + preparo
+    
     valid = True
     lista = split_mensagem(data)
-    nome = lista[1]
-    receita = lista[2]
-    for i in range(3, len(lista)): # monta novamente a receita      
-        receita += " " + lista[i]
+    nome = lista[1] # nome do usuario que vai adicionar a receita
+    titulo_receita = lista[2] # titulo da receita
+    
+    receita = lista[3]
+    for partes in lista[4:]:
+        receita += " " + partes
+    
+    receitas_preparo[titulo_receita] = receita
+    
+    receitas_salvas = receitas.get(nome)
+    receitas_salvas += "|" + titulo_receita.replace("_", " ")
+    receitas[nome] = receitas_salvas
+    garfadas[titulo_receita] = 0
     
     print("usuario: " + nome)
     print()
-    print("Receita: " + receita)
-    
+    print("Titulo da receita: " + titulo_receita)
+    print()
+    print("Modo de Preparo: " + receita)
     return str(valid)
 
 #pronto
@@ -179,7 +195,8 @@ def requisicao_adicionar_amigo(data):
     nome_amigo = lista[2]
     
     if lista_usuarios.get(nome_amigo) != None: # verifica se o amigo existe no banco de dados
-        valid = nome_amigo + " adicionado a lista de amigos do usuario: " + usuario
+        print("\n" + nome_amigo + " adicionado a lista de amigos do usuario: " + usuario + "\n")
+        valid = "adicionado"
 
     return valid
     
@@ -215,21 +232,31 @@ def requisicao_buscar_perfil_amigo(data):
         resposta = descrisao + " " + lista_receitas        
     return resposta
 
-def requisicao_garfada(data):
-    resposta = False # resposta padrão
-    lista = split_mensagem(data)
-    usuario = lista[1] 
-    usuario_avaliado = lista[2]
+# pronto
+def requisicao_get_garfada(data):
+    mensagem = split_mensagem(data)
+    dono_receita = mensagem[1]
+    receita = mensagem[2]
     
-    nome_receita = ""
-    for i in range(3, len(lista)):
-        nome_receita += " " + lista[i]
-        
-    print("receita: " + nome_receita + " do usuario: " + usuario_avaliado + " Foi avaliada pelo usuario: " + usuario)
+    return str(garfadas.get(receita))
+    
+    
+def requisicao_add_garfada(data):
+    valid = False
+    lista = split_mensagem(data)  
+    
+    usuario_avaliador = lista[1]
+    usuario_avaliado = lista[2]
+    receita_avaliada = lista[3]
+    
+    qtd_garfadas = garfadas.get(receita_avaliada)
+    garfadas[receita_avaliada] = qtd_garfadas +1
+      
+    print("receita: " + receita_avaliada + " do usuario: " + usuario_avaliado + ". Foi avaliada pelo usuario: " + usuario_avaliador)
     resposta = True
     
     
-    return str(resposta)
+    return str(valid)
 
 # pronto
 def requisicao_get_receita(data):

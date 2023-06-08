@@ -8,7 +8,9 @@ import buscar_perfil_proprio
 import buscar_perfil_amigo
 import get_receita
 import add_amigo
-
+import envio_receita
+import get_garfadas
+import avaliar_receita
 # Variaveis Globais
 usuario_logado = "" # nome do usuario logado no sistema
 descricao_usuario = "" # descrição do perfil do usuario logado
@@ -19,7 +21,7 @@ lista_receitas = ["", "", "", "", "", "", "", "", "", ""] # lista de receitas
 ingredientes = "" # lista de ingredientes retornados pelo servidor
 modo_preparo = "" # Modo de preparo da receita
 titulo_receita = "" # Nome da receita que esta sendo requisitada
-
+garfadas = ""
 
 
 import os
@@ -249,10 +251,11 @@ class Perfil_usuario_receitas(tk.Frame):
 			
 			self.after(40, setState) # atualiza os widget 25 vezes por segundo
 		def commando(receita):
-			global ingredientes, modo_preparo, titulo_receita
+			global ingredientes, modo_preparo, titulo_receita, garfadas
 			if receita != "":
 				titulo_receita = receita
 				ingredientes, modo_preparo = get_receita.get_receita(usuario_buscado, receita)
+				garfadas = get_garfadas.get_garfadas(usuario_buscado, receita)
 				controller.show_frame(mostrar_receita)
     
 		tk.Frame.__init__(self, parent)
@@ -329,10 +332,11 @@ class Perfil_amigo(tk.Frame):
 			
 			self.after(40, setState) # atualiza os widget 25 vezes por segundo
 		def commando(receita):
-			global ingredientes, modo_preparo, titulo_receita
+			global ingredientes, modo_preparo, titulo_receita, garfadas
 			if receita != "":
 				titulo_receita = receita
 				ingredientes, modo_preparo = get_receita.get_receita(usuario_buscado, receita)
+				garfadas = get_garfadas.get_garfadas(usuario_buscado, receita)
 				controller.show_frame(mostrar_receita)
     
 		tk.Frame.__init__(self, parent)
@@ -390,11 +394,19 @@ class mostrar_receita(tk.Frame):
 			label["text"] = titulo_receita
 			lista_ingredienteslabel["text"] = ingredientes
 			label_preparo["text"] = modo_preparo
+			button_garfadas["text"] = "Garfadas: " + garfadas
 
 			self.after(40, setState) # atualiza os widget 25 vezes por segundo
    
 		tk.Frame.__init__(self, parent)
-  
+
+		def atualizar_garfadas():
+			global garfadas
+   
+			avaliar_receita.avaliar_receita(usuario_logado, usuario_buscado, titulo_receita)
+			garfadas = get_garfadas.get_garfadas(usuario_buscado, titulo_receita)
+			setState()
+      
 		# botão para voltar a tela anterior
 		button_voltar = ttk.Button(self, text ="Voltar", command = lambda : controller.show_frame(Perfil_amigo))
 		button_voltar.place(x = 340,y = 10)
@@ -404,8 +416,8 @@ class mostrar_receita(tk.Frame):
 		label.place(x = 10,y = 10)
   
 		# Botão avaliar receita
-		button_voltar = ttk.Button(self, text ="Garfadas 15", command = lambda : controller.show_frame(mostrar_receita))
-		button_voltar.place(x = 160,y = 610)
+		button_garfadas = ttk.Button(self, text ="", command = lambda : atualizar_garfadas())
+		button_garfadas.place(x = 160,y = 610)
   
 		# Ingredientes
 		label_ingredientes = ttk.Label(self, text ="Ingredientes:", font = MIDFONT)
@@ -431,10 +443,28 @@ class adicionar_receita(tk.Frame):
 
 	def __init__(self, parent, controller):
 		lista_ingredientes = [] # adicionar_receita
-  
+   
+		def voltar():
+			atualizaPerfil()
+			controller.show_frame(Perfil_usuario_receitas)
+   
+		def atualizaPerfil():# atualiza os dados do perfil do usuario
+			global usuario_buscado, lista_receitas, descricao_amigo 
+			descricao_amigo, lista_receitas = buscar_perfil_amigo.requisitar_perfil_amigo(usuario_logado, usuario_logado)
+   
 		def salvar_receita():
-			preparo = modo_preparo.get(1.0,END)
-			controller.show_frame(perfil_usuario)
+			titulo = titulo_receita.get()
+			preparo = modo_preparo.get(1.0, END)
+			envio_receita.envio_receita(usuario_logado, titulo, lista_ingredientes, preparo)
+			
+			titulo_receita.set("")
+			modo_preparo.delete("1.0","end")
+			lista_ingredientes.clear()
+			listar_ingredienetesLabel["text"] = ""
+			
+   
+			atualizaPerfil()
+			controller.show_frame(Perfil_usuario_receitas)
 
 		def listar_ingredientes():
 			texto = ""
@@ -453,7 +483,7 @@ class adicionar_receita(tk.Frame):
   
 		
 		# botão para voltar a tela anterior
-		button_voltar = ttk.Button(self, text ="Voltar", command = lambda : controller.show_frame(perfil_usuario))
+		button_voltar = ttk.Button(self, text ="Voltar", command = lambda : voltar())
 		button_voltar.place(x = 340,y = 10)
   
 		# Titulo da receita
@@ -468,7 +498,8 @@ class adicionar_receita(tk.Frame):
 		conteiner_titulo = Frame(self)
 		conteiner_titulo.place(x = 8,y = 88)
 
-		titulo = Entry(conteiner_titulo)
+		titulo_receita=tk.StringVar()
+		titulo = Entry(conteiner_titulo, textvariable = titulo_receita)
 		titulo["width"] = 40 # largura da caixa de texto
 		titulo["font"] = fontePadrao
 		titulo.pack(side=LEFT)
@@ -500,7 +531,7 @@ class adicionar_receita(tk.Frame):
 
 
 		# botão para adicionar a receita
-		button_salvar = ttk.Button(self, text ="Salvar Receita", command = lambda: salvar_receita)#lambda : controller.show_frame(Perfil_amigo))
+		button_salvar = ttk.Button(self, text ="Salvar Receita", command = lambda: salvar_receita())#lambda : controller.show_frame(Perfil_amigo))
 		button_salvar.place(x = 160,y = 610)
 
 class adicionar_amigo(tk.Frame):
