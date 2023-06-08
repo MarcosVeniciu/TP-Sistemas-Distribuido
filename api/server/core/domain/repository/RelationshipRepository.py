@@ -9,4 +9,4 @@ class RelationshipRepository:
 
     def get_by_uuid(self, uuid: str) -> models.Relationship:
         stmt = select(models.Relationship).where(models.Relationship.uuid == uuid)
-        return self.session.execute(stmt)
+        return self.session.execute(stmt).first()

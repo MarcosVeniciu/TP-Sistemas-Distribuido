@@ -7,6 +7,6 @@ class UserRepository:
     def __init__(self, session: Session) -> None:
         self.session = session
 
-    def get_by_uuid(self, uuid: str) -> models.User:
-        stmt = select(models.User).where(models.User.uuid == uuid)
+    def get_by_username(self, username: str) -> models.User:
+        stmt = select(models.User).where(models.User.username == username)
         return self.session.execute(stmt).first()

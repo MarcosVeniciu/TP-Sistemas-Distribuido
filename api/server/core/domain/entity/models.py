@@ -20,6 +20,13 @@ class User:
         self.followers = []
         self.following = []
 
+    def as_dict(self, password=False):
+        ret = {c.name: getattr(self, c.name) for c in self.__table__.columns}
+        if not password:
+            ret["password"] = ""
+
+        return ret
+        
 class Recipe:
     __tablename__ = "recipe"
     uuid = Column(VARCHAR(100), primary_key=True)
