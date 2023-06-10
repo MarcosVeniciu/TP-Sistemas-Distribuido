@@ -1,21 +1,22 @@
 import cliente
 
 def envio_receita(nome, nome_receita, ingredientes, preparo):
+    print("envio Receita")
     '''Envia uma receita para ser salva no servidor.
        :param nome: nome do usuario ques esta adicionando a receita.
        :param nome_receita: nome da receita.
        :param ingredientes: lista de ingredientes.
        :param preparo: modo de preparo da receita
        :return: True se tiver sido salvo com sucesso e False caso contrario.'''
-    if len(nome_receita) <= 1:
+    if len(nome_receita) < 1:
         print("Voce precisa informar um nome!")
         return False
 
-    if len(ingredientes) <= 1:
+    if len(ingredientes) < 1:
         print("Voce precisa informar os ingredientes!")
         return False
     
-    if len(preparo) <= 1:
+    if len(preparo) < 1:
         print("Voce precisa informar o modo de reparo!")
         return False
         
@@ -23,7 +24,7 @@ def envio_receita(nome, nome_receita, ingredientes, preparo):
     titulo = ajustar_titulo(nome_receita)
     ingredientes = ajsutar_lista_ingredientes(ingredientes)
     requisicao = "1 " + nome + " " + titulo + " " + ingredientes + preparo
-    print(requisicao)
+    print("Envio Receita: " + requisicao)
     return cliente.requisicao(requisicao)
 
 def ajustar_titulo(titulo):
