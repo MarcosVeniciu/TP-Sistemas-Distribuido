@@ -189,8 +189,8 @@ class RelationshipRepository:
             return retrived_data
 
 if __name__ == "__main__":
-    user = User("a", "canna", "0x3f3f3f3f3f3f3f", "Cozinheiro há quatro anos. Trabalho num restaurante renomado.")
-    user2 = User("b", "bis", "666", "Cozinho com tempero aromáticos, especializado na culinária italiana de Friuli-Parma.")
+    user = User("a", "canna", "1234", "Cozinheiro ha quatro anos. Trabalho num restaurante renomado.")
+    user2 = User("b", "bis", "666", "Cozinho com temperos aromaticos, especializado na culinaria italiana de Friuli-Parma.")
     user3 = User("c", "bolacha", "31413", "Nao eh biscoito")
     user_repo = UserRepository()
     user_repo.create(user)
