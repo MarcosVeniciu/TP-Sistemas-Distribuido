@@ -37,6 +37,13 @@ QUERY_RECIPE_UUID = """
     uuid = (?)
 """
 
+QUERY_RECIPE_NAME = """
+    SELECT *
+    FROM recipe
+    WHERE
+    title = (?)
+"""
+
 QUERY_RECIPE_USER_UUID = """
     SELECT *
     FROM recipe

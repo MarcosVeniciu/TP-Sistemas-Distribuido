@@ -159,16 +159,17 @@ class Server:
         recipe_repo = RecipeRepository()
         recipes = recipe_repo.find_by_user_uuid(user_uuid)
         is_friend = False
-        descricao = None
+        descricao = ""
         for friend in friends:
             if friend[4] == usuario_buscado:
                 is_friend = True
                 descricao = friend[6]
+                break
             
             # verifica se o amigo exite no banco de dados
-            resposta = usuario_buscado + " " + descricao + " " + " [receita de bacalhau] " + " [receita de frango frito]" # O nome das receutas ficam entre os []
+        resposta = descricao + " " 
         for recipe in recipes:
-            resposta += "[" + recipe[1] + "]"
+            resposta += "|" + recipe[1]
         return resposta
 
     def requisicao_garfada(self, data):
@@ -192,19 +193,21 @@ class Server:
     def requisicao_get_receita(self,data):
         resposta = "" # resposta padrão
         lista = self.split_mensagem(data)
-        usuario = lista[1] 
-        usuario_avaliado = lista[2]
+        dono_receita = lista[1]
+        nome_receita = lista[2]
         
-        nome_receita = ""
         for i in range(3, len(lista)):
             nome_receita += " " + lista[i]
-            
-        resposta = "[Receita de bacalhau] " + " [1kg de manteiga, 10 litros de vinagre]" + " [joga tudo na panela e torce pra dar certo.]"
         
-        return resposta
+        recipe_repo = RecipeRepository()
+        receita = recipe_repo.find_by_name(nome_receita)
+        
 
-    def e_amigo(usuario, usuario_buscado):
-        return True
+            
+        if receita != None:
+        resposta = receita
+        
+    return resposta
     
 if __name__ == "__main__":
     server = Server()

@@ -86,6 +86,31 @@ class RecipeRepository:
             else:
                 return retrived_data
     
+    def find_by_name(self, name):
+        try:
+            connection = DataBase()
+        
+            cursor = connection.start_connection()
+            cursor.execute(
+                queries.QUERY_RECIPE_UUID, 
+                [
+                    str(name)
+                ]
+            )
+            connection.commit_operation()
+            
+            retrived_data = cursor.fetchall()
+
+            connection.finish_connection()
+        except SQL.OperationalError:
+            return False
+        except SQL.IntegrityError:
+            return False
+        else:
+            if (len(retrived_data) == 0):
+                return False
+            else:
+                return retrived_data
 class UserRepository:
     def __init__(self) -> None:
         pass
