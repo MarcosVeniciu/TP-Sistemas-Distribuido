@@ -153,6 +153,7 @@ class Server:
         usuario_buscado = lista[2]
         resposta = "vazio" # resposta padrão
         relation_repo = RelationshipRepository()
+        user_repo = UserRepository()
         user_uuid = user_repo.find_user_by_username(usuario)[0]
         friends = relation_repo.find(user_uuid)
         
