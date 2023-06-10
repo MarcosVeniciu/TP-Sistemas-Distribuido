@@ -1,16 +1,13 @@
 import socket
 import pickle
-from core.models import User, Recipe, Relationship
-from core.e
-
+from core.models import *
+from core.repository import *
+from core.service import *
 dict = {'A': 1, 'B': 2, 'C': 3, 'marcos': 26}
 
-
-
 class Server:
-    def __init__(self, relation_service: RelationshipService, user_service: UserService) -> None:
-        self.relation_service = relation_service
-        self.user_service = user_service
+    def __init__(self) -> None:
+        pass
     
 
     def server(self, host = 'localhost', port=8082):    
@@ -79,64 +76,74 @@ class Server:
         :param data: mensagem enviada pelo cliente
         :return: retorna True se o nome e a senha estiverem corretos, caso contrario False
         '''
-        valid = False
+        
+        user_service = UserService()
+        
         lista = self.split_mensagem(data)
         nome = lista[1]
         senha = lista[2]    
         
-        senha_real = dict.get(nome)
-        if  senha_real != None: # usuario exite, logo a senha existe. Mas a senha esta certa?
-            if str(senha_real) == senha:
-                valid = True
-        return str(valid)
+        return str(user_service.login(nome, senha))
         
-    def requisicao_adicionar_receita(self,data):   
+    def requisicao_adicionar_receita(self, data):   
         '''Adiciona uma nova receita ao banco de dados do usuario.
         :param data: mensagem recebida com o nome do usuairo que esta adicionando a receita
                         e a receita que sera adicionada
             :return: true caso tenha sido salva com sucesso ou false caso contrario'''
-            
-        valid = True
         lista = self.split_mensagem(data)
-        nome = lista[1]
-        receita = lista[2]
-        for i in range(3, len(lista)): # monta novamente a receita      
-            receita += " " + lista[i]
+        user_name = lista[1] # nome do usuario que vai adicionar a receita
+        titulo = lista[2] # titulo da receita
         
-        print("usuario: " + nome)
-        print()
-        print("Receita: " + receita)
+        receita = lista[3]
+        for partes in lista[4:]:
+            receita += " " + partes
+            
+        recipe_service = RecipeService()
+    
+        # print("usuario: " + nome)
+        # print()
+        # print("Receita: " + receita)
         
-        return str(valid)
+        return str(recipe_service.add(user_name, titulo, receita))
         
     def requisicao_adicionar_amigo(self, data):
         '''Adiciona um novo amigo a lista de amigos do usuario.
         :param data: mensagem recebido do cliente, contmdo o nomeo do usuario que ira adicionar o amigo e o nome do amigo.
         :return true caso seja adicionado com sucesso e false caso contrario.'''
-        
-        valid = False 
+        relation_service = RelationshipService()
+        valid = None
         lista = self.split_mensagem(data)
+        
         usuario = lista[1]
         nome_amigo = lista[2]
-        
-        if dict.get(nome_amigo) != None: # verifica se o amigo existe no banco de dados
-            print("nome adicionado a lista de amigos do usuario: " + usuario)
-            valid = True
-
-        return str(valid)
+        if relation_service.add(usuario, nome_amigo):
+            valid = "adicionado"
+        else:
+            valid = "Usuario nao encontrado!"
+            
+        return valid
         
     def requisicao_perfil_proprio(self, data):
         lista = self.split_mensagem(data)
-        usuario = lista[1]
+        usuario = lista[1] #Dono do perfil
+        
+        user_repo = UserRepository()
+        relation_repo = RelationshipRepository()
+        
+        usr = user_repo.find_user_by_username(usuario)
+        friends = relation_repo.find(usuario)
         
         resposta = "vazio" # resposta padrão
-        descrisao = "[Tenho 157 anos, e estou na faculdade a 117]"
+        descrisao = usr[3]
+        amigos = "|"
         
-        # deve retornar uma string: usuario descricao amigo_1:nun_receita amigo_2:nun_receita
-        
+        for friend in friends:
+            amigos += friend[1]
+        amigos += "|"
+            
         # verifica se ele existe no banco de dados
-        resposta = usuario + " " + descrisao + " " + "[A:123] " + "[B:6] " + "[C:55] "
-        
+        resposta = descrisao + " " + amigos
+    
         return resposta
         
     def requisicao_buscar_perfil_amigo(self, data):   
@@ -159,6 +166,8 @@ class Server:
         lista = self.split_mensagem(data)
         usuario = lista[1] 
         usuario_avaliado = lista[2]
+        
+        recipe_repo
         
         nome_receita = ""
         for i in range(3, len(lista)):

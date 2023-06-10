@@ -24,11 +24,10 @@ CREATE_RECIPE = """
         uuid,
         title, 
         fk_user_uuid, 
-        ingredients, 
-        preparation_mode, 
+        recipe, 
         likes, 
         created_at
-    ) VALUES (?,?,?,?,?,?,?)
+    ) VALUES (?,?,?,?,?,?)
 """
 
 QUERY_RECIPE_UUID = """
@@ -50,8 +49,7 @@ CREATE TABLE IF NOT EXISTS recipe(
     uuid VARCHAR(100) PRIMARY KEY,
     title VARCHAR(100) NOT NULL,
     fk_user_uuid VARCHAR(100) NOT NULL,
-    ingredients VARCHAR(5000) NOT NULL,
-    preparation_mode VARCHAR(5000) NOT NULL,
+    recipe VARCHAR(5000) NOT NULL,
     likes INTEGER NOT NULL,
     created_at DATETIME NOT NULL,
     FOREIGN KEY (fk_user_uuid) REFERENCES user (uuid)         
@@ -82,10 +80,19 @@ CREATE_RELATIONSHIP = """
     VALUES (?,?,?)
 """
 
-FETCH_RELATIONSHIPS = """ 
+FETCH_RELATIONSHIPS__UUID = """ 
     SELECT 
         fk_relationship_user_followed
     FROM 
         relationship 
+    WHERE fk_relationship_user_follower = (?)
+"""
+
+FETCH_RELATIONSHIPS = """ 
+    SELECT 
+        fk_relationship_user_followed, user.username
+    FROM 
+        relationship 
+    JOIN user ON relationship.fk_relationship_user_followed = user.uuid
     WHERE fk_relationship_user_follower = (?)
 """

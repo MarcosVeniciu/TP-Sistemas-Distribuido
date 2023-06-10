@@ -9,17 +9,14 @@ class User:
         self.following = []
 
 class Recipe:
-    def __init__(self, uuid, user_uuid, title, ingredients, preparation_mode, likes, created_at) -> None:
+    def __init__(self, uuid, user_uuid, title, recipe, likes, created_at) -> None:
         self.uuid = uuid
         self.user_uuid = user_uuid
         self.title = title
-        self.ingredients = ingredients
-        self.preparation_mode = preparation_mode
+        self.recipe = recipe
         self.likes = likes
         self.created_at = created_at
     
-    def get_recipe(self):
-        return {"title": self.title,"ingredients": self.ingredients, "preparation_mode": self.preparation_mode}
 
 class Relationship:
     def __init__(self, uuid: str,  user_uuid1: str, user_uuid2: str) -> None:

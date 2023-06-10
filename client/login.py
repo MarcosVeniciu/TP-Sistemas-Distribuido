@@ -9,9 +9,11 @@ def logar(nome, senha):
         :return: True se o nome e senha estiver certo e False caso contrario'''
     nome = max(nome.split(" "))# remove os espaços em branco caso tenha
     senha = max(senha.split(" "))# remove os espaços em branco caso tenha
-    
+ 
     requisisao = "0 " + nome + " " + senha
-    return cliente.requisicao(requisisao)
+    print(requisisao)
+    resposta = cliente.requisicao(requisisao)
+    return True if resposta == "True" else False
 
 
 

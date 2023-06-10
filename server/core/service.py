@@ -2,31 +2,27 @@ from repository import RelationshipRepository, UserRepository, RecipeRepository
 from models import Relationship, User, Recipe
 import uuid
 from passlib.hash import sha256_crypt
-
+from datetime import datetime
 
 class RelationshipService:
-    def __init__(self, user_repo: RelationshipRepository):
-        self.relation_repo = user_repo
+    def __init__(self):
+        pass
 
-    def add(self, uuid_1: str, uuid_2: str):
+    def add(self, username_1: str, username_2: str):
         user_repository         = UserRepository()
         relationship_repository = RelationshipRepository()
         
         follow_relationship_id   = uuid.uuid4()
         
-        followed_user_exist = user_repository.find_user_by_username(uuid_1)
-        follower_user_exist = user_repository.find_user_by_username(uuid_2)
-        
-        followed_user_id = followed_user_exist[0]
-        follower_user_id = follower_user_exist[0]
-        
-        follow_relationship = Relationship(
-            str(follow_relationship_id), 
-            followed_user_id, 
-            follower_user_id,
-        )
+        followed_user_exist = user_repository.find_user_by_username(username_1)
+        follower_user_exist = user_repository.find_user_by_username(username_2)
+    
 
         if (followed_user_exist and follower_user_exist):
+            followed_user_id = followed_user_exist[0]
+            follower_user_id = follower_user_exist[0]
+        
+            follow_relationship = Relationship(str(follow_relationship_id), followed_user_id, follower_user_id)
             response = relationship_repository.create(follow_relationship)
             
             return response
@@ -34,33 +30,48 @@ class RelationshipService:
             return False
 
 class UserService:
-    def __init__(self, user_repo: UserRepository):
-        self.user_repo = user_repo
+    def __init__(self):
+        pass
 
     def create_account(self, username: str, password: str, description: str):
+        user_repo        = UserRepository()
         user_uuid = uuid.uuid4()
         password_hash = sha256_crypt.hash(password)
-        username_found = self.user_repo.find_user_by_username(username)
+        username_found = user_repo.find_user_by_username(username)
         if username_found:
             return False
         user = User(uuid, username, password_hash, description)
         
-        self.user_repo.create(user)
-        return True
+        return user_repo.create(user)
+
         
     def login(self, username: str, password: str):
-        row = self.user_repo.find_user_by_username(username)
+        user_repo = UserRepository()
+        row = user_repo.find_user_by_username(username)
 
         if row is None:
-            return {"message": "uuid não encontrado", "status": "error"}
+            return False
 
-        user: User = row.User
-
-        if user.password == password:
-            ret = {}
-            ret["user"] = user.as_dict(password=False)
-            ret["message"] = "Login efetuado com sucesso"
-            ret["status"] = "success"
-            return ret
+        if row[2] == password:
+            return True
         else:
-            return {"message": "Senha incorreta", "status": "error"}
+            return False
+        
+class RecipeService:
+    def __init__(self) -> None:
+        pass
+    
+    def add(self, username, title, recipe):
+        user_repository = UserRepository()
+        recipe_repository = RecipeRepository()
+        
+        user = user_repository.find_user_by_username(username)
+
+        if user:
+            recipe_uuid = str(uuid.uuid4())
+            user_uuid = user[0]
+            recipe = Recipe(recipe_uuid, user_uuid, title, recipe, 0, datetime.now()) 
+            
+            return recipe_repository.create(recipe)
+        else:
+            return False
