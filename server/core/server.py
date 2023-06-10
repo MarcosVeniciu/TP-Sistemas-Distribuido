@@ -206,9 +206,9 @@ class Server:
 
             
         if receita != None:
-        resposta = receita
+            resposta = receita
         
-    return resposta
+        return resposta
     
 if __name__ == "__main__":
     server = Server()
