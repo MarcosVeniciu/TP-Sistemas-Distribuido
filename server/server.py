@@ -167,7 +167,7 @@ class Server:
         usuario = lista[1] 
         usuario_avaliado = lista[2]
         
-        recipe_repo
+        
         
         nome_receita = ""
         for i in range(3, len(lista)):
@@ -195,5 +195,9 @@ class Server:
 
     def e_amigo(usuario, usuario_buscado):
         return True
+    
+if __name__ == "__main__":
+    server = Server()
+    server.server()
 
 
