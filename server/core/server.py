@@ -1,8 +1,9 @@
 import socket
 import pickle
-from core.models import *
-from core.repository import *
-from core.service import *
+from models import *
+from repository import *
+from service import *
+from queries import *
 dict = {'A': 1, 'B': 2, 'C': 3, 'marcos': 26}
 
 class Server:
@@ -131,15 +132,15 @@ class Server:
         relation_repo = RelationshipRepository()
         
         usr = user_repo.find_user_by_username(usuario)
-        friends = relation_repo.find(usuario)
+        friends = relation_repo.find(usr[0])
         
         resposta = "vazio" # resposta padrão
         descrisao = usr[3]
         amigos = "|"
         
         for friend in friends:
-            amigos += friend[1]
-        amigos += "|"
+            amigos += str(friend[4])
+            amigos += "|"
             
         # verifica se ele existe no banco de dados
         resposta = descrisao + " " + amigos
@@ -151,14 +152,23 @@ class Server:
         usuario = lista[1] 
         usuario_buscado = lista[2]
         resposta = "vazio" # resposta padrão
+        relation_repo = RelationshipRepository()
+        user_uuid = user_repo.find_user_by_username(usuario)[0]
+        friends = relation_repo.find(user_uuid)
         
-        if self.e_amigo(usuario, usuario_buscado): #verifica se o usuario buscado é amigo do que esta buscando ele
-            # deve retornar uma string: usuario descricao nome_receita_1 nome_receita_2 nome_receita_3  
-            descrisao = "[Tenho 157 anos, e estou na faculdade a 117]"
+        recipe_repo = RecipeRepository()
+        recipes = recipe_repo.find_by_user_uuid(user_uuid)
+        is_friend = False
+        descricao = None
+        for friend in friends:
+            if friend[4] == usuario_buscado:
+                is_friend = True
+                descricao = friend[6]
             
             # verifica se o amigo exite no banco de dados
-            resposta = usuario_buscado + " " + descrisao + " " + " [receita de bacalhau] " + " [receita de frango frito]" # O nome das receutas ficam entre os []
-            
+            resposta = usuario_buscado + " " + descricao + " " + " [receita de bacalhau] " + " [receita de frango frito]" # O nome das receutas ficam entre os []
+        for recipe in recipes:
+            resposta += "[" + recipe[1] + "]"
         return resposta
 
     def requisicao_garfada(self, data):

@@ -90,7 +90,7 @@ FETCH_RELATIONSHIPS__UUID = """
 
 FETCH_RELATIONSHIPS = """ 
     SELECT 
-        fk_relationship_user_followed, user.username
+        *
     FROM 
         relationship 
     JOIN user ON relationship.fk_relationship_user_followed = user.uuid

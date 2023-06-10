@@ -199,26 +199,31 @@ if __name__ == "__main__":
     print(user_repo.find_user_by_username(user.username)[0])
     print(user_repo.find_user_by_username(user2.username))
     
-    recipe = Recipe("a", "b", "pao com linguica", "pao, linguiça, prepara td e vai", 0, datetime.today())
+    recipe = Recipe("a", "b", "pao de bataaata", "pao, batata. tudo dento", 0, datetime.today())
     recipe_repo = RecipeRepository()
-    recipe_repo.create(recipe)
-    print(recipe_repo.find_by_user_uuid("bolacha"))
+    recipe_repo.create(Recipe("a", "b", "pao de bataaata", "pao, batata. tudo dento", 0, datetime.today()))
+    recipe_repo.create(Recipe("b", "b", "sopa de preda", "preda, agua. tudo dento", 0, datetime.today()))
+    recipe_repo.create(Recipe("c", "c", "Bacalhau a Milanesa", "2 bacalhau\n Uma milanesa\n Modo de preparo:\nTudo dento", 0, datetime.today()))
+    recipe_repo.create(Recipe("d", "a", "Lambisgoia a crepioca", "alho, crepe, lambisgoia fresca", 0, datetime.today()))
+    recipe_repo.create(Recipe("e", "a", "Tomate cru", "Tomate. So comer", 0, datetime.today()))
+    print(recipe_repo.find_by_user_uuid("a"))
+    print(recipe_repo.find_by_user_uuid("b"))
+    print(recipe_repo.find_by_user_uuid("c"))
     
     rel1 = Relationship("ab", user.uuid, user2.uuid)
     rel2 = Relationship("ba", user2.uuid, user.uuid)
     rel3 = Relationship("ac", user.uuid, user3.uuid)
     rel4 = Relationship("ca", user3.uuid, user.uuid)
+    
     relation_repo = RelationshipRepository()
     relation_repo.create(rel1)
     relation_repo.create(rel2)
     relation_repo.create(rel3)
     relation_repo.create(rel4)
     print(relation_repo.find("a"))
-    for x in relation_repo.find("a"):
-        print("|" + x[1], end="")
-    print()
-    print(relation_repo.find("b"))
-    print(relation_repo.find("c"))
+    
+    # print(relation_repo.find("b"))
+    # print(relation_repo.find("c"))
     
     
     
