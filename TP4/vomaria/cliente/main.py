@@ -159,7 +159,7 @@ class Login(tk.Frame):
 	def verificaSenha(self):
 			valid = False   
 			if self.nome.get() != "" and self.senha.get() != "": # verifica se algo foi digitado
-				valid = True if self.nome.get() =="mario" and self.senha.get() == "123" else False 
+				valid = self.usuario.logar(self.nome.get(), self.senha.get())
 
 			if valid == True:
 				self.usuario.get_usuario()

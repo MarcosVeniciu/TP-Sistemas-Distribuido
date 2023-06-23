@@ -22,10 +22,9 @@ class Usuario:
         '''
         objeto_remoto = self.get_objeto_remoto()
         
-        self.nome = objeto_remoto.get_nome() 
-        self.descricao = objeto_remoto.get_descricao()
-        self.lista_amigos = objeto_remoto.get_lista_amigos()
-        self.lista_receita = objeto_remoto.get_lista_receitas()
+        self.descricao = objeto_remoto.get_user_description(self.nome)
+        self.lista_amigos = objeto_remoto.get_friends(self.nome)
+        self.lista_receita = objeto_remoto.get_recipes(self.nome)
         
     def get_objeto_remoto(self):
         # Obtém uma referência ao objeto remoto registrado no Name Server
@@ -37,14 +36,14 @@ class Usuario:
         Quando é adicionado um novo amigo, a lista de amigos é atualizada, então deve buscar no servidor a nova lista.
         '''
         objeto_remoto = self.get_objeto_remoto()
-        self.lista_amigos = objeto_remoto.get_lista_amigos()
+        self.lista_amigos = objeto_remoto.get_friends(self.n)
                
     def _update_lista_receitas(self):
         '''
         Quando uma receita é adicionada, a lista de receita deve ser atualizada.
         '''
         objeto_remoto = self.get_objeto_remoto()
-        self.lista_receita = objeto_remoto.get_lista_receitas()
+        self.lista_receita = objeto_remoto.get_recipes(self.nome)
     
     def get_nome(self):
         '''
@@ -76,8 +75,10 @@ class Usuario:
         '''
         resposta = "Usuario, não encontrado!"
         objeto_remoto = self.get_objeto_remoto()
-        resposta = objeto_remoto.add_amigo(usuario, name)
-        self._update_lista_amigos()
+        res = objeto_remoto.follow_user(usuario, name)
+        if res:
+            self._update_lista_amigos()
+            resposta = res
         return resposta
     
     def add_receita(self, usuario, receita_name, ingredientes, modo_preparo):
@@ -85,7 +86,12 @@ class Usuario:
         Envia a requisição para adicionar um receita na lista de receitas do usuario logado.
         '''
         objeto_remoto = self.get_objeto_remoto()
-        objeto_remoto.add_receita(usuario, receita_name, ingredientes, modo_preparo)
+        objeto_remoto.add_recipe(usuario, receita_name, ingredientes, modo_preparo)
         self._update_lista_receitas()
     
-    
+    def logar(self, nome, senha):
+        objeto_remoto = self.get_objeto_remoto()
+        if objeto_remoto.logar(nome, senha):
+            self.nome = nome
+            self.senha = senha
+            self.get_usuario()

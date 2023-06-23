@@ -16,7 +16,6 @@ class Recipe:
         self.recipe = recipe
         self.likes = likes
         self.created_at = created_at
-    
 
 class Relationship:
     def __init__(self, uuid: str,  user_uuid1: str, user_uuid2: str) -> None:
