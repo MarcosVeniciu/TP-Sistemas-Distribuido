@@ -7,7 +7,7 @@ class MeuObjetoRemoto(object):
         em_uso = None
         while 1:
             em_uso = True
-            funcao()
+            #funcao()
             em_uso = False
             
     def infinito(self):
