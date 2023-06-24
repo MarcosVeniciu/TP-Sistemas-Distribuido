@@ -1,11 +1,12 @@
 import Pyro5.api
-from models import User, Recipe, Relationship
+import threading
 from service import UserService, RelationshipService, RecipeService
-from repository import UserRepository, RecipeRepository, RelationshipRepository
+
 
 @Pyro5.api.expose
 class RemoteServer():
     def __init__(self) -> None:
+        self.lock = threading.Lock()
         self.user_service = UserService()
         self.relation_service = RelationshipService()
         self.recipe_service = RecipeService()
@@ -34,7 +35,7 @@ class RemoteServer():
     
     
     def get_ingredients_list(self, title):
-        print("here")
+       
         recipe = self.get_recipe_by_title(title)[0]
 
         recipe_split = recipe[3].split("]")
@@ -48,7 +49,7 @@ class RemoteServer():
     def get_preparation_mode(self, title):
         recipe = self.get_recipe_by_title(title)[0]
         recipe_split = recipe[3].split("]")
-        print(recipe_split)
+  
         return recipe_split[1]
     
     
@@ -80,20 +81,24 @@ class RemoteServer():
     def like_recipe(self, name):
         return self.recipe_service.like_recipe(name)
     
-if __name__ == '__main__':
-    daemon = Pyro5.api.Daemon()
+    def run(self):
+        daemon = Pyro5.api.Daemon()
+
+        uri = daemon.register(self)
 
 
-    objeto_remoto = RemoteServer()
-    objeto_remoto.get_recipes("canna")
-    uri = daemon.register(objeto_remoto)
+        ns = Pyro5.api.locate_ns()
 
-
-    ns = Pyro5.api.locate_ns()
-
-    ns.register("servidor", uri) 
+        ns.register("servidor", uri) 
     
-    print("Servidor aguardando conexões...")
-    daemon.requestLoop()
-
-
+        print("Servidor aguardando conexões...")
+        daemon.requestLoop()
+        
+    def thread(self):
+        server_thread = threading.Thread(target=self.run)
+        server_thread.start()
+        server_thread.join()
+    
+if __name__ == '__main__':
+    server = RemoteServer()
+    server.thread()
