@@ -266,6 +266,7 @@ class perfil_usuario(tk.Frame):
 		if nome_amigo != "":
 			self.amigo.get_amigo(nome_amigo)
 			self.lista_receitas = self.amigo.get_lista_receitas()
+			print(self.lista_receitas)
 			for i in range(len(self.lista_receitas)):
 				self.amigo_lista_receita[i].set(self.lista_receitas[i])
 			self.controller.show_frame(Perfil_amigo)

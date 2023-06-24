@@ -19,8 +19,14 @@ class RemoteServer():
         return self.relation_service.user_follows(username)
     
     @Pyro5.api.expose
-    def get_recipes(self, username):
-        return self.recipe_service.get_recipe_by_user(username)
+    def get_recipes(self, username) -> list:
+        recipes = []
+        try:
+            for recipe in self.recipe_service.get_recipe_by_user(username):
+                recipes.append(recipe[1])
+            return recipes
+        except:
+            return recipes
     
     @Pyro5.api.expose
     def get_recipe_by_title(self, title):
@@ -69,7 +75,7 @@ if __name__ == '__main__':
 
 
     objeto_remoto = RemoteServer()
-    
+    objeto_remoto.get_recipes("canna")
     uri = daemon.register(objeto_remoto)
 
 
