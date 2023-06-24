@@ -3,22 +3,22 @@ from models import User, Recipe, Relationship
 from service import UserService, RelationshipService, RecipeService
 from repository import UserRepository, RecipeRepository, RelationshipRepository
 
-
+@Pyro5.api.expose
 class RemoteServer():
     def __init__(self) -> None:
         self.user_service = UserService()
         self.relation_service = RelationshipService()
         self.recipe_service = RecipeService()
     
-    @Pyro5.api.expose
+    
     def login(self, username, password):
         return self.user_service.login(username, password)
     
-    @Pyro5.api.expose
+    
     def get_friends(self, username):
         return self.relation_service.user_follows(username)
     
-    @Pyro5.api.expose
+    
     def get_recipes(self, username) -> list:
         recipes = []
         try:
@@ -28,11 +28,11 @@ class RemoteServer():
         except:
             return recipes
     
-    @Pyro5.api.expose
+    
     def get_recipe_by_title(self, title):
         return self.recipe_service.get_recipe_by_title(title)    
     
-    @Pyro5.api.expose
+    
     def get_ingredients_list(self, title):
         print("here")
         recipe = self.get_recipe_by_title(title)[0]
@@ -44,27 +44,27 @@ class RemoteServer():
   
         return ingredients
     
-    @Pyro5.api.expose
+    
     def get_preparation_mode(self, title):
         recipe = self.get_recipe_by_title(title)[0]
         recipe_split = recipe[3].split("]")
         print(recipe_split)
         return recipe_split[1]
     
-    @Pyro5.api.expose
+    
     def get_likes(self, title):
         recipe = self.get_recipe_by_title(title)[0]
         return recipe[4]
     
-    @Pyro5.api.expose
+    
     def get_user_description(self, username):
         return self.user_service.user_description(username)
     
-    @Pyro5.api.expose
+    
     def follow_user(self, username, user_to_follow):
         return self.relation_service.add(username, user_to_follow)
     
-    @Pyro5.api.expose
+    
     def add_recipe(self, username, title, ingredients, preparation_mode):
         recipe = ""
         sz = len(ingredients)
@@ -77,8 +77,8 @@ class RemoteServer():
         
         return self.recipe_service.add(username, title, recipe)
     
-    
-        
+    def like_recipe(self, name):
+        return self.recipe_service.like_recipe(name)
     
 if __name__ == '__main__':
     daemon = Pyro5.api.Daemon()

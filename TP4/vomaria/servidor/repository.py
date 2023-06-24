@@ -111,6 +111,29 @@ class RecipeRepository:
                 return False
             else:
                 return retrived_data
+            
+    def like_recipe(self, name):
+        try:
+            connection = DataBase()
+        
+            cursor = connection.start_connection()
+            cursor.execute(
+                queries.SET_LIKE, 
+                [
+                    str(name)
+                ]
+            )
+            connection.commit_operation()
+            
+            connection.finish_connection()
+        except SQL.OperationalError:
+            return False
+        except SQL.IntegrityError:
+            return False
+        else:
+            return True
+
+
 class UserRepository:
     def __init__(self) -> None:
         pass

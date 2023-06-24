@@ -546,7 +546,7 @@ class mostrar_receita_amigo(tk.Frame):
    
 	def atualizar_garfadas(self):
 		self.receita.set_garfada()
-		self.receita.get_receita()
+		self.receita.get_receita(self.receita.get_titulo())
 		self.setState()
 
 

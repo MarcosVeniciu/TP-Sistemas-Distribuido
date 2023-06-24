@@ -103,3 +103,10 @@ FETCH_RELATIONSHIPS = """
     JOIN user ON relationship.fk_relationship_user_followed = user.uuid
     WHERE fk_relationship_user_follower = (?)
 """
+
+SET_LIKE = """
+    UPDATE recipe
+    SET likes = likes + 1
+    WHERE
+        title = (?)
+"""

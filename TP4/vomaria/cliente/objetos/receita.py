@@ -57,7 +57,7 @@ class Receita():
         Envia para o servidor a requisição de adicionar uma garfada a uma receita avaliada pelo usuario logado.
         '''
         self.objeto_remoto = self.get_objeto_remoto()
-        self.objeto_remoto.set_garfadas()
+        self.objeto_remoto.like_recipe(self.titulo)
         self._update_garfadas()
     
     
@@ -66,5 +66,5 @@ class Receita():
         Busca no srevidor o numero de garfadas que a receita tem, caso a quantidade de garfadas tenha sido alterada.
         '''
         self.objeto_remoto = self.get_objeto_remoto()
-        self.garfadas = self.objeto_remoto.get_garfadas()
+        self.garfadas = self.objeto_remoto.get_likes(self.titulo)
         
