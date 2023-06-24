@@ -13,7 +13,7 @@ class MeuObjetoRemoto:
         self.garfadas = 15
         
         
-    @Pyro5.api.expose # permite acessar o metodo remotamente, precisa coloca-lo sobre todos os metodos de acesso remoto
+    @Pyro5.api.expose 
     def get_nome(self):
         return self.nome
 
@@ -61,19 +61,18 @@ class MeuObjetoRemoto:
         self.modo_preparo = modo_preparo
         self.lista_receitas.append(receita_name)
     
-# Inicializa o servidor Pyro5
-daemon = Pyro5.api.Daemon()
+if __name__ == '__main__':
+    daemon = Pyro5.api.Daemon()
 
-# Registra o objeto remoto no servidor Pyro5
-objeto_remoto = MeuObjetoRemoto()
-uri = daemon.register(objeto_remoto)
+    objeto_remoto = MeuObjetoRemoto()
+    uri = daemon.register(objeto_remoto)
 
-# Obtém uma referência ao Name Server
-ns = Pyro5.api.locate_ns()
 
-# Registra a URI do objeto remoto no Name Server
-ns.register("servidor", uri) # registra o name server como servidor
+    ns = Pyro5.api.locate_ns()
 
-# Inicia o servidor Pyro5
-print("Servidor aguardando conexões...")
-daemon.requestLoop()
+
+    ns.register("servidor", uri) 
+
+
+    print("Servidor aguardando conexões...")
+    daemon.requestLoop()

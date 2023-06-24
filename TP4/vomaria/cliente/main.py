@@ -263,12 +263,12 @@ class perfil_usuario(tk.Frame):
 		self.controller.show_frame(Perfil_usuario_receitas)
   
 	def commando(self, nome_amigo):# mostra o perfil do amigo
-			if nome_amigo != "":
-				self.amigo.get_amigo()
-				self.lista_receitas = self.amigo.get_lista_receitas()
-				for i in range(len(self.lista_receitas)):
-					self.amigo_lista_receita[i].set(self.lista_receitas[i])
-				self.controller.show_frame(Perfil_amigo)
+		if nome_amigo != "":
+			self.amigo.get_amigo(nome_amigo)
+			self.lista_receitas = self.amigo.get_lista_receitas()
+			for i in range(len(self.lista_receitas)):
+				self.amigo_lista_receita[i].set(self.lista_receitas[i])
+			self.controller.show_frame(Perfil_amigo)
 
 	def setState(self):
 		self.usuariolabel["text"] = self.usuario.get_nome()

@@ -30,16 +30,20 @@ class RelationshipService:
             return False
         
     def user_follows(self, username):
+        answer: list = []
+     
         user_repo = UserRepository()
         relation_repo = RelationshipRepository()
         
         usr = user_repo.find_user_by_username(username)
+        #print(usr)
         friends = relation_repo.find(usr[0])
-        
-        answer = []
+        #print(friends)
         for friend in friends:
-            answer = answer.append(friend[4])
+            answer.append(friend[4])
+        print(answer)
         return answer
+        
         
 class UserService:
     def __init__(self):

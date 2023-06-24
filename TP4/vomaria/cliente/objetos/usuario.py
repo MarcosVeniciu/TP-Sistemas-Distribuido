@@ -91,7 +91,9 @@ class Usuario:
     
     def logar(self, nome, senha):
         objeto_remoto = self.get_objeto_remoto()
-        if objeto_remoto.logar(nome, senha):
+        if objeto_remoto.login(nome, senha):
             self.nome = nome
             self.senha = senha
             self.get_usuario()
+            return True
+        return False

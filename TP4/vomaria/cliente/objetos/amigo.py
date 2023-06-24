@@ -11,15 +11,15 @@ class Amigo():
         uri = Pyro5.api.locate_ns().lookup("servidor")
         return Pyro5.api.Proxy(uri)
     
-    def get_amigo(self):
+    def get_amigo(self, username):
         '''
         Monta o objeto amigo, buscando os seus atributos no servidor
         '''
         objeto_remoto = self.get_objeto_remoto()
         
-        self.nome = objeto_remoto.get_nome() 
-        self.descricao = objeto_remoto.get_descricao()
-        self.lista_receita = objeto_remoto.get_lista_receitas()
+        self.nome = username
+        self.descricao = objeto_remoto.get_user_description(username)
+        self.lista_receita = objeto_remoto.get_recipes(username)
         
     def get_nome(self):
         '''
