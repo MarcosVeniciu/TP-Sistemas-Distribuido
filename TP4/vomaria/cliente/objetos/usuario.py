@@ -36,7 +36,7 @@ class Usuario:
         Quando é adicionado um novo amigo, a lista de amigos é atualizada, então deve buscar no servidor a nova lista.
         '''
         objeto_remoto = self.get_objeto_remoto()
-        self.lista_amigos = objeto_remoto.get_friends(self.n)
+        self.lista_amigos = objeto_remoto.get_friends(self.nome)
                
     def _update_lista_receitas(self):
         '''
@@ -73,12 +73,12 @@ class Usuario:
         '''
         Envia a requisição para adicionar amigo a lista de amigos do usuario logado.
         '''
-        resposta = "Usuario, não encontrado!"
+        resposta = "Usuario não encontrado!"
         objeto_remoto = self.get_objeto_remoto()
         res = objeto_remoto.follow_user(usuario, name)
         if res:
             self._update_lista_amigos()
-            resposta = res
+            resposta = True
         return resposta
     
     def add_receita(self, usuario, receita_name, ingredientes, modo_preparo):

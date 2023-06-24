@@ -107,7 +107,8 @@ class RecipeService:
     
     def get_recipe_by_title(self, title):
         recipe_repo = RecipeRepository()
+        print(title)
         receita = recipe_repo.find_by_name(title)
-        
+        print(receita)
         return receita
         

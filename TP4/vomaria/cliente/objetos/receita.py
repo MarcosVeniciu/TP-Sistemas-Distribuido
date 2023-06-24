@@ -13,16 +13,16 @@ class Receita():
         uri = Pyro5.api.locate_ns().lookup("servidor")
         return Pyro5.api.Proxy(uri)
     
-    def get_receita(self):
+    def get_receita(self, title):
         '''
         Monta o objeto receita, buscando os seus atributos no servidor
         '''
         objeto_remoto = self.get_objeto_remoto()
         
-        self.titulo = objeto_remoto.get_titulo() 
-        self.lista_ingredientes = objeto_remoto.get_lista_ingredientes()
-        self.modo_preparo = objeto_remoto.get_modo_preparo()
-        self.garfadas = objeto_remoto.get_garfadas()
+        self.titulo = title
+        self.lista_ingredientes = objeto_remoto.get_ingredients_list(title)
+        self.modo_preparo = objeto_remoto.get_preparation_mode(title)
+        self.garfadas = objeto_remoto.get_likes(title)
         
     def get_titulo(self):
         '''

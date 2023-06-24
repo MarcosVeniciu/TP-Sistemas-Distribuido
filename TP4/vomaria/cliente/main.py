@@ -355,7 +355,7 @@ class Perfil_usuario_receitas(tk.Frame):
   
 	def commando(self, receita):
 			if receita != "":
-				self.receita.get_receita()
+				self.receita.get_receita(receita)
 				self.controller.show_frame(mostrar_receita_usuario)
     
 	def setState(self):
@@ -437,7 +437,7 @@ class Perfil_amigo(tk.Frame):
 
 	def commando(self, nome_receita):
 			if nome_receita != "":
-				self.receita.get_receita()
+				self.receita.get_receita(nome_receita)
 				self.controller.show_frame(mostrar_receita_amigo)
     
 	def setState(self):
@@ -695,8 +695,8 @@ class adicionar_amigo(tk.Frame):
 
 	def adicionarAmigo(self):
 			if self.nome.get() != "" and self.nome.get() != self.usuario.get_nome():
-				resposta = self.usuario.add_amigo(self.usuario.get_nome(), self.nome.get())	
-				if resposta == "adicionado":
+				resposta = self.usuario.add_amigo(self.nome.get(),self.usuario.get_nome())	
+				if resposta:
 					self.usuario.get_usuario()
 					lista_amigos = self.usuario.get_lista_amigos()
 					self.nome.delete(0, tk.END)

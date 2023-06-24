@@ -34,17 +34,27 @@ class RemoteServer():
     
     @Pyro5.api.expose
     def get_ingredients_list(self, title):
-        recipe = self.get_recipe_by_title(title)
+        print("here")
+        recipe = self.get_recipe_by_title(title)[0]
+
         recipe_split = recipe[3].split("]")
+
         ingredients = recipe_split[0]
         ingredients = ingredients.split("|")
+  
         return ingredients
     
     @Pyro5.api.expose
     def get_preparation_mode(self, title):
-        recipe = self.get_recipe_by_title(title)
+        recipe = self.get_recipe_by_title(title)[0]
         recipe_split = recipe[3].split("]")
+        print(recipe_split)
         return recipe_split[1]
+    
+    @Pyro5.api.expose
+    def get_likes(self, title):
+        recipe = self.get_recipe_by_title(title)[0]
+        return recipe[4]
     
     @Pyro5.api.expose
     def get_user_description(self, username):
