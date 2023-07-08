@@ -15,3 +15,6 @@ def calorias(ingrediente, quantidade):
 
 # link de teste: http://127.0.0.1:5000/hello/John/25
 # pode mudar o nome john e a idade 25 
+
+# site de refeencia
+# https://www.digitalocean.com/community/tutorials/how-to-make-a-web-application-using-flask-in-python-3

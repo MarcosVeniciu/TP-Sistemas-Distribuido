@@ -720,7 +720,7 @@ class calcular_calorias(tk.Frame):
 		self.fontePadrao = ("Arial", "11")
   		
 		# botão para voltar a tela anterior
-		self.button_voltar = ttk.Button(self, text ="Voltar", command = lambda : self.controller.show_frame(Perfil_usuario_receitas))
+		self.button_voltar = ttk.Button(self, text ="Voltar", command = lambda : self.voltar())
 		self.button_voltar.place(x = 340,y = 10)
   
 		# Titulo da receita
@@ -775,7 +775,13 @@ class calcular_calorias(tk.Frame):
 			mensagem = "Erro"
 
 		return mensagem
-        
+
+	def voltar(self):
+		self.listar_ingredienetesLabel["text"] = ""
+		self.calorias_total_label["text"] = ""
+		self.controller.show_frame(perfil_usuario)
+		
+  
 	def listar_ingredientes(self):
 			self.texto = ""
 			# coleta o nome do ingrediente
