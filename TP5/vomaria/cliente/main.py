@@ -798,7 +798,7 @@ class calcular_calorias(tk.Frame):
 				
 				if self.calorias != "Erro":
 					# Adicionar o ingrediente a lista	
-					self.calorias_total += int(self.calorias)
+					self.calorias_total += float(self.calorias)
 					self.string_nova = f"- {self.quantidade}g {self.ingrediente}: {self.calorias} calorias"
 					self.lista_ingredientes.append(self.string_nova) 
 
