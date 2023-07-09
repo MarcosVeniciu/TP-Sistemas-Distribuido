@@ -259,10 +259,12 @@ class perfil_usuario(tk.Frame):
 		button2.place(x = 90,y = 610)
   
 		# botão para calcular calorias
-		button2 = ttk.Button(self, text ="Calcular Calorias", command = lambda : controller.show_frame(calcular_calorias))
+		button2 = ttk.Button(self, text ="Calcular Calorias", command = lambda : self.calcular_calorias())
 		button2.place(x = 230,y = 610)
 		self.setState()
-
+	def calcular_calorias(self):		
+		self.controller.show_frame(calcular_calorias)
+  
 	def minhas_receitas(self):
 		self.lista = self.usuario.get_lista_receitas()
 		for i in range(len(self.lista)):
@@ -748,8 +750,9 @@ class calcular_calorias(tk.Frame):
   
 		self.conteiner_ingredientes = Frame(self)
 		self.conteiner_ingredientes.place(x = 8,y = 158)
-  
-		self.ingredientes = Entry(self.conteiner_ingredientes)
+
+		self.nome_ingrediente=tk.StringVar()
+		self.ingredientes = Entry(self.conteiner_ingredientes, textvariable = self.nome_ingrediente)
 		self.ingredientes["width"] = 40 # largura da caixa de texto
 		self.ingredientes["font"] = self.fontePadrao
 		self.ingredientes.pack(side=LEFT)
@@ -779,6 +782,10 @@ class calcular_calorias(tk.Frame):
 	def voltar(self):
 		self.listar_ingredienetesLabel["text"] = ""
 		self.calorias_total_label["text"] = ""
+		self.titulo_receita.set("")
+		self.nome_ingrediente.set("")
+		self.lista_ingredientes = []
+		self.calorias_total = 0
 		self.controller.show_frame(perfil_usuario)
 		
   
