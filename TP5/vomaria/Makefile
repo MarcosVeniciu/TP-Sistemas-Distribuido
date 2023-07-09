@@ -3,7 +3,7 @@ CURRENT_DIR := $(shell pwd)
 
 # Instalar as dependências do requirements.txt
 install:
-	gnome-terminal --tab --title="Install Reqirements" -- bash -c "source bin/activate && pip install -r reqirements.txt; read -p 'Pressione Enter para sair...'"
+	gnome-terminal --tab --title="Install Requirements" -- bash -c "source bin/activate && pip install -r requirements.txt; read -p 'Pressione Enter para sair...'"
 
 # Instalar as dependências no sistema operacional
 run_dependencies:
