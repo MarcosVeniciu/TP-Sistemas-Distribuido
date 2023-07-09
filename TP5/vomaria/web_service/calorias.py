@@ -1,5 +1,4 @@
 from flask import Flask
-import datetime
 
 calories_100g = {"arroz": 500, "fermento biologico" : 50, 
                  "creme de leite": 70, "ovos": 400, "batata": 300,
